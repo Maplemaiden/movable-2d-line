@@ -345,7 +345,7 @@
       `原书：害怕程度；<b>100 即死</b>；积分 ≈ 100−惊悚；老手通常压在 <b>60</b> 以内。认家人照顾会降，恐惧/质疑会升。`;
     const log = (store.data.horrorLog || []).slice().reverse();
     if (!log.length) {
-      ui.horrorList.innerHTML = '<p style="color:var(--muted);font-size:13px">尚无变动。剧情、选项与热点会写入原因。</p>';
+      ui.horrorList.innerHTML = '<p style="color:var(--muted);font-size:13px">尚无变动。主线选项与 AI 对话结束会写入原因；房间热点不再改惊悚。</p>';
       return;
     }
     ui.horrorList.innerHTML = log.map((e) => {
@@ -1064,22 +1064,29 @@
     async openAiChat(npcId) {
       const meta = npcsData[npcId];
       if (!meta) return;
+      if (store.data.flags.horrorDead) {
+        toast('惊悚值已满，角色已死亡');
+        return;
+      }
+      // 自由探索与可走动节点均可聊；剧情锁移动时若已能走动也可
       this.aiOpen = true;
       this.dialogueOpen = true;
       this.playerCanMove = false;
+      this.aiSessionStartLen = (this.chatHistory[npcId] || []).length;
       this.openDialogueUi();
       ui.aiRow.classList.add('open');
       ui.dlgChoices.innerHTML = '';
       ui.dlgName.textContent = meta.displayName;
       ui.dlgText.textContent = ai.hasKey()
-        ? '你可以直接说话。回车发送。'
-        : '未检测到 API 密钥，将使用角色兜底短句。仍可输入试玩。';
+        ? '你可以直接说话。回车发送；关掉对话时会根据内容微调惊悚值。'
+        : '未检测到 API 密钥，将使用角色兜底短句。关掉对话时仍会温和估算惊悚变化。';
       window.PortraitUI?.show?.(npcId, {});
       ui.aiInput.value = '';
       ui.aiInput.focus();
       this.aiTarget = npcId;
       const node = nodes[store.data.nodeId];
       if (node?.aiStage) ai.setStage(node.aiStage);
+      else if (store.data.day === 1) ai.setStage('D1_FAMILY');
     }
 
     async sendAi() {
@@ -1099,6 +1106,37 @@
       refreshHud();
       ui.aiInput.value = '';
       if (!result.ok) toast(result.reason === 'no_key' ? 'API 占位中（无密钥兜底）' : `API：${result.reason}`);
+    }
+
+    /** 结束 AI 对话：先评判惊悚（小幅），再关面板 */
+    async closeAiChat() {
+      if (!this.aiOpen) {
+        this.closePanels();
+        return;
+      }
+      const npcId = this.aiTarget;
+      const hist = (this.chatHistory[npcId] || []).slice(this.aiSessionStartLen || 0);
+      const userTurns = hist.filter((m) => m.role === 'user').length;
+      if (npcId && userTurns > 0 && ai?.judgeHorror) {
+        ui.dlgText.textContent = '（整理心绪……）';
+        try {
+          const judged = await ai.judgeHorror(npcId, hist);
+          if (judged?.delta) {
+            store.setHorror(judged.delta, {
+              relative: true,
+              reason: judged.reason || 'AI 对话结束',
+              source: 'ai_chat',
+            });
+            store.save();
+            refreshHud();
+            const sign = judged.delta > 0 ? '+' : '';
+            toast(`惊悚 ${sign}${judged.delta} · ${judged.reason}`);
+          }
+        } catch (_) { /* ignore */ }
+      }
+      this.aiTarget = null;
+      this.aiSessionStartLen = 0;
+      this.closePanels();
     }
 
     openDialogueUi() {
@@ -1364,13 +1402,7 @@
             this.bg.setDisplaySize(this.worldWidth, CFG.designHeight);
           }
         }
-        if (h.horror) {
-          store.setHorror(h.horror, {
-            relative: true,
-            reason: h.horrorReason || `拾取「${h.label}」`,
-            source: 'hotspot',
-          });
-        }
+        // 房间热点不改惊悚值；惊悚仅由主线导演数据 + AI 对话结束评判驱动
         store.save();
         playSfx('pickup');
         this.showSimple(h.label, h.text, () => this.rebuildHotspots(store.data.roomId));
@@ -1390,13 +1422,6 @@
           if (h.peekFlag) store.data.flags[h.peekFlag] = true;
         }
         if (h.clue) store.data.clues[h.clue] = true;
-        if (h.horror) {
-          store.setHorror(h.horror, {
-            relative: true,
-            reason: h.horrorReason || `观察「${h.label}」`,
-            source: 'hotspot',
-          });
-        }
         store.save();
         playSfx('ui_click', 0.2);
         this.showSimple(h.label, h.text, () => {
@@ -1916,7 +1941,7 @@
     };
   }
   document.getElementById('ai-send').onclick = () => window.__hhGame?.scene.getScene('main')?.sendAi();
-  document.getElementById('ai-close').onclick = () => window.__hhGame?.scene.getScene('main')?.closePanels();
+  document.getElementById('ai-close').onclick = () => window.__hhGame?.scene.getScene('main')?.closeAiChat?.();
   document.getElementById('ai-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();

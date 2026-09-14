@@ -240,12 +240,22 @@ flags: {
 
 ### 6.2 惊悚 / 软分支 `when` / 节点字段
 
+**惊悚来源（现行）：**
+
+| 来源 | 是否改惊悚 |
+|------|------------|
+| 房间热点（观察/拾取/开灯等） | ❌ 不改 |
+| 主线台词 / 选项 `horror`·`effects` | ✅ 导演轨仍可改（Boss 入场等） |
+| **AI 对话结束**（点「关闭」） | ✅ 裁判小幅 ±0～4 |
+
+AI 结束评判：`AiNpcClient.judgeHorror`（有密钥走 JSON 裁判；无密钥关键词启发式）。认家/照顾降、当怪物/驱赶升；禁止剧烈波动。
+
 同前：行内 `horror` / `horrorSet` / `horrorReason`；选项 `effects`；`when` 多键 AND、仍汇流同一 `next`。  
-节点常用：`room` / `lockDoors` / `allowRooms` / `intro` / `briefing` / `approachTrigger` / `storyHotspot` / `guide` / `advanceHint` / `aiStage` / `ending` / `unlockMove`。
+节点常用：`room` / `lockDoors` / `allowRooms` / `intro` / `briefing` / `approachTrigger` / `storyHotspot` / `guide` / `advanceHint` / **`aiStage`** / `ending` / `unlockMove`。
 
 ### 6.3 热点与地面贴纸
 
-`hotspots.json` 示例（血迹）：
+`hotspots.json` **不要再写 `horror`/`horrorReason`**（房间交互不驱动惊悚）。血迹示例：
 
 ```json
 {
@@ -278,7 +288,9 @@ NPC `walkTo` 同理：`setFlipX(pose.walkTo > npc.x)`。
 - 立绘：`PortraitUI.js` + `#vn-stage-chars`；对话时藏走动精灵  
 - 客厅：`livingVariant` + `flags.livingClean`；拖把 `mop_blood`  
 - BGM：`BgmPlayer.js`；设置键见下表  
-- AI：禁区（第七天钥匙/幸福之心/红姐真相未揭示前）保持  
+- **AI 已分阶段多 prompt**：`prompts/npc_stages.json` → `stages.D1_MEET / D1_MOTHER / D1_BOSS_ENTER / D1_FAMILY / …`；节点 `aiStage` 切入；`AiNpcClient.buildSystemPrompt` = shared + 当前阶段该 NPC 人设  
+- 自由探索（如 `FREE_D1`）可靠近 NPC 按 **C / E** 正常聊；关对话时 `closeAiChat` 评判惊悚  
+- AI 禁区（第七天钥匙/幸福之心/红姐真相未揭示前）保持  
 
 ### 6.6 设置相关 `localStorage`
 

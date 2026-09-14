@@ -501,7 +501,7 @@
       "room_bathroom"
     ],
     "unlockPreset": "free_d1",
-    "exploreHint": "自由探索中。可拾取拖把、开灯、与 NPC 对话。准备好后去厨房餐桌继续主线。",
+    "exploreHint": "自由探索中。可拾取拖把、开灯；靠近家人按 C 或 E 与 AI 对话（结束对话时会微调惊悚值）。准备好后去厨房餐桌继续主线。",
     "showNpcs": ["sisi", "boss"],
     "npcPose": {
       "sisi": { "x": 1100, "sprite": "sisi_idle" },
