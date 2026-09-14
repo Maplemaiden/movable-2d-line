@@ -1,0 +1,57 @@
+{
+  "room_xuanguan": {
+    "id": "room_xuanguan",
+    "name": "玄关",
+    "bg": "bg_xuanguan_day",
+    "width": 2560,
+    "spawnX": 420,
+    "doors": [
+      { "id": "to_living", "x": 2280, "target": "room_living", "targetX": 360, "label": "进入客厅" }
+    ]
+  },
+  "room_living": {
+    "id": "room_living",
+    "name": "客厅",
+    "bg": "bg_living_day",
+    "bgNight": "bg_living_night",
+    "width": 2560,
+    "spawnX": 360,
+    "doors": [
+      { "id": "to_xuanguan", "x": 180, "target": "room_xuanguan", "targetX": 2100, "label": "回玄关" },
+      { "id": "to_kitchen", "x": 2360, "target": "room_kitchen", "targetX": 360, "label": "去厨房" },
+      { "id": "to_bedroom", "x": 1680, "target": "room_bedroom", "targetX": 360, "label": "去卧室" },
+      { "id": "to_bathroom", "x": 980, "target": "room_bathroom", "targetX": 360, "label": "去浴室" }
+    ]
+  },
+  "room_kitchen": {
+    "id": "room_kitchen",
+    "name": "厨房",
+    "bg": "bg_kitchen_day",
+    "width": 2560,
+    "spawnX": 360,
+    "doors": [
+      { "id": "to_living_k", "x": 180, "target": "room_living", "targetX": 2200, "label": "回客厅" }
+    ]
+  },
+  "room_bedroom": {
+    "id": "room_bedroom",
+    "name": "卧室",
+    "bg": "bg_bedroom_day",
+    "bgNight": "bg_bedroom_night",
+    "width": 2560,
+    "spawnX": 360,
+    "doors": [
+      { "id": "to_living_b", "x": 180, "target": "room_living", "targetX": 1550, "label": "回客厅" }
+    ]
+  },
+  "room_bathroom": {
+    "id": "room_bathroom",
+    "name": "浴室",
+    "bg": "bg_bathroom",
+    "width": 2560,
+    "spawnX": 360,
+    "doors": [
+      { "id": "to_living_bath", "x": 180, "target": "room_living", "targetX": 980, "label": "回客厅" }
+    ]
+  }
+}

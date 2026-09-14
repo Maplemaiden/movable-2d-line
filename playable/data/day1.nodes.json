@@ -1,0 +1,497 @@
+{
+  "P04": {
+    "id": "P04",
+    "title": "抵达30层",
+    "room": "room_xuanguan",
+    "lockDoors": false,
+    "showNpcs": [],
+    "intro": [
+      {
+        "speaker": "system",
+        "text": "已抵达 30 层「幸福之家」。这是横版侧视：人物左右走动。"
+      },
+      {
+        "speaker": "system",
+        "text": "操作：A / D（或← →）左右移动；走到发光点按 E 互动；靠近人可按 C 对话。"
+      }
+    ],
+    "choices": [
+      {
+        "text": "明白了，我开始走",
+        "effects": {},
+        "next": null,
+        "unlockMove": true
+      }
+    ],
+    "onEnter": {
+      "day": 1,
+      "aliveCount": 30,
+      "floor": 30
+    },
+    "advanceHint": "👉 向右走到门（发光提示）按 E 进入客厅",
+    "guide": {
+      "type": "door",
+      "doorId": "to_living",
+      "text": "向右走到门，按 E"
+    },
+    "nextOnDoor": {
+      "to_living": "D1-01"
+    },
+    "aiStage": "D1_MEET"
+  },
+  "D1-01": {
+    "id": "D1-01",
+    "title": "思思首次出现",
+    "room": "room_living",
+    "lockDoors": true,
+    "showNpcs": [
+      "sisi"
+    ],
+    "npcPose": {
+      "sisi": {
+        "x": 1180,
+        "sprite": "sisi_red_idle"
+      }
+    },
+    "spawnPlayerX": 360,
+    "approachTrigger": {
+      "npc": "sisi",
+      "range": 180
+    },
+    "advanceHint": "👉 向右走近红裙女孩，靠近后自动触发",
+    "guide": {
+      "type": "npc",
+      "npcId": "sisi",
+      "text": "走近她"
+    },
+    "autoDialogue": false,
+    "onApproach": {
+      "anim": "hug",
+      "sound": "sting_low",
+      "dialogue": [
+        {
+          "speaker": "sisi",
+          "text": "……你回来了。"
+        },
+        {
+          "speaker": "system",
+          "text": "她扑上来。冰凉的小手像要掐住什么——又像是在抱。"
+        }
+      ],
+      "choices": [
+        {
+          "text": "别怕，我带你换衣服",
+          "effects": {
+            "familyTrust.sisi": 1
+          },
+          "next": "D1-02"
+        },
+        {
+          "text": "你是谁？这是哪里？",
+          "effects": {},
+          "next": "D1-02"
+        },
+        {
+          "text": "好，妈妈在这儿",
+          "effects": {
+            "familyTrust.sisi": 1
+          },
+          "next": "D1-02"
+        }
+      ]
+    },
+    "aiStage": "D1_MEET"
+  },
+  "D1-02": {
+    "id": "D1-02",
+    "title": "母女关系异常",
+    "room": "room_living",
+    "lockDoors": false,
+    "allowRooms": [
+      "room_living",
+      "room_bathroom"
+    ],
+    "showNpcs": [
+      "sisi"
+    ],
+    "npcPose": {
+      "sisi": {
+        "x": 1100,
+        "sprite": "sisi_red_idle"
+      }
+    },
+    "advanceHint": "看完对话后选一项继续；也可之后自由走动",
+    "guide": {
+      "type": "hotspot",
+      "hotspotId": "red_dress",
+      "text": "红裙"
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "sisi",
+        "text": "裙子……湿了。妈妈，不要走。"
+      },
+      {
+        "speaker": "system",
+        "text": "可查看红裙。若想拿毛巾，选完后也可去浴室（本段先选一项推进剧情）。"
+      }
+    ],
+    "choices": [
+      {
+        "text": "用毛巾给她擦脸",
+        "effects": {
+          "familyTrust.sisi": 1,
+          "clues.wetDress": true
+        },
+        "requireInv": null,
+        "next": "D1-03"
+      },
+      {
+        "text": "这血是怎么回事？",
+        "effects": {
+          "clues.wetDress": true
+        },
+        "next": "D1-03"
+      },
+      {
+        "text": "先换干净衣服，乖",
+        "effects": {
+          "familyTrust.sisi": 1
+        },
+        "next": "D1-03"
+      }
+    ],
+    "aiStage": "D1_MOTHER"
+  },
+  "D1-03": {
+    "id": "D1-03",
+    "title": "断头Boss登场",
+    "room": "room_living",
+    "lockDoors": true,
+    "showNpcs": [
+      "sisi",
+      "boss"
+    ],
+    "npcPose": {
+      "sisi": {
+        "x": 1100,
+        "sprite": "sisi_idle"
+      },
+      "boss": {
+        "x": 2480,
+        "sprite": "boss_idle",
+        "walkTo": 1500,
+        "walkAnim": true
+      }
+    },
+    "autoDialogue": true,
+    "sound": "sting_low",
+    "dialogue": [
+      {
+        "speaker": "boss",
+        "text": "呵，有趣。居然能在思思手里活到现在。"
+      },
+      {
+        "speaker": "boss",
+        "text": "别碰她。"
+      },
+      {
+        "speaker": "sisi",
+        "text": "你最好别动她。这个妈妈有点意思。"
+      }
+    ],
+    "choices": [
+      {
+        "text": "我不是来打架的，我是家人",
+        "effects": {
+          "familyTrust.boss": 1
+        },
+        "next": "D1-03b"
+      },
+      {
+        "text": "……你好。你个子好像有点……",
+        "effects": {
+          "familyTrust.boss": 1
+        },
+        "next": "D1-03b"
+      },
+      {
+        "text": "不许这样凶孩子",
+        "effects": {
+          "familyTrust.sisi": 1,
+          "familyTrust.boss": 1
+        },
+        "next": "D1-03b"
+      }
+    ],
+    "aiStage": "D1_BOSS_ENTER"
+  },
+  "D1-03b": {
+    "id": "D1-03b",
+    "title": "家庭关系初定",
+    "room": "room_living",
+    "lockDoors": false,
+    "showNpcs": [
+      "sisi",
+      "boss"
+    ],
+    "npcPose": {
+      "sisi": {
+        "x": 1100,
+        "sprite": "sisi_idle"
+      },
+      "boss": {
+        "x": 1500,
+        "sprite": "boss_idle"
+      }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "boss",
+        "text": "我可是实实在在的一米八六。你再仔细看看呢？"
+      },
+      {
+        "speaker": "system",
+        "text": "门已解锁。可与家人交谈（C），或去厨房准备晚餐。"
+      }
+    ],
+    "choices": [
+      {
+        "text": "最萌身高差，天生一对",
+        "effects": {
+          "familyTrust.boss": 1
+        },
+        "next": "FREE_D1"
+      },
+      {
+        "text": "我去厨房看看",
+        "effects": {},
+        "next": "FREE_D1"
+      }
+    ],
+    "aiStage": "D1_FAMILY"
+  },
+  "FREE_D1": {
+    "id": "FREE_D1",
+    "title": "自由活动",
+    "room": "room_living",
+    "lockDoors": false,
+    "showNpcs": [
+      "sisi",
+      "boss"
+    ],
+    "npcPose": {
+      "sisi": {
+        "x": 1100,
+        "sprite": "sisi_idle"
+      },
+      "boss": {
+        "x": 1500,
+        "sprite": "boss_idle"
+      }
+    },
+    "advanceHint": "👉 向右进入厨房，走到餐桌触发晚餐",
+    "guide": {
+      "type": "door",
+      "doorId": "to_kitchen",
+      "text": "去厨房"
+    },
+    "autoDialogue": false,
+    "storyNext": "D1-04",
+    "aiStage": "D1_FAMILY",
+    "storyHotspot": "table"
+  },
+  "D1-04": {
+    "id": "D1-04",
+    "title": "第一次家庭晚餐",
+    "room": "room_kitchen",
+    "lockDoors": true,
+    "showNpcs": [
+      "sisi",
+      "boss"
+    ],
+    "npcPose": {
+      "sisi": {
+        "x": 1050,
+        "sprite": "sisi_idle"
+      },
+      "boss": {
+        "x": 1380,
+        "sprite": "boss_idle"
+      }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "sisi",
+        "text": "妈妈，饭饭。"
+      },
+      {
+        "speaker": "system",
+        "text": "桌上的东西很新鲜。新鲜得过分。"
+      }
+    ],
+    "choices": [
+      {
+        "text": "先吃一口（装作若无其事）",
+        "effects": {
+          "inventory.ateStrangeFood": true
+        },
+        "next": "D1-04b"
+      },
+      {
+        "text": "我来做给你们吃",
+        "effects": {
+          "familyTrust.sisi": 1,
+          "familyTrust.boss": 1
+        },
+        "next": "D1-04b"
+      },
+      {
+        "text": "看他们先动筷",
+        "effects": {},
+        "next": "D1-04b"
+      }
+    ],
+    "aiStage": "D1_DINNER"
+  },
+  "D1-04b": {
+    "id": "D1-04b",
+    "title": "餐后",
+    "room": "room_kitchen",
+    "lockDoors": false,
+    "showNpcs": [
+      "sisi",
+      "boss"
+    ],
+    "npcPose": {
+      "sisi": {
+        "x": 1050,
+        "sprite": "sisi_idle"
+      },
+      "boss": {
+        "x": 1380,
+        "sprite": "boss_idle"
+      }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "system",
+        "text": "夜色压下来了。回卧室休息吧。"
+      }
+    ],
+    "choices": [
+      {
+        "text": "去卧室",
+        "effects": {},
+        "next": "D1-05"
+      }
+    ],
+    "aiStage": "D1_DINNER"
+  },
+  "D1-05": {
+    "id": "D1-05",
+    "title": "第一夜",
+    "room": "room_bedroom",
+    "night": true,
+    "lockDoors": true,
+    "showNpcs": [
+      "sisi",
+      "boss"
+    ],
+    "npcPose": {
+      "sisi": {
+        "x": 980,
+        "sprite": "sisi_idle"
+      },
+      "boss": {
+        "x": 1450,
+        "sprite": "boss_idle"
+      }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "system",
+        "text": "第一夜。房子很冷，但有人在。"
+      },
+      {
+        "speaker": "sisi",
+        "text": "今晚，思思要跟妈妈睡。"
+      },
+      {
+        "speaker": "boss",
+        "text": "……我坐这边。"
+      }
+    ],
+    "choices": [
+      {
+        "text": "跟思思说晚安",
+        "effects": {
+          "familyTrust.sisi": 1
+        },
+        "next": "END_DAY1"
+      },
+      {
+        "text": "看向床边的他",
+        "effects": {
+          "familyTrust.boss": 1
+        },
+        "next": "END_DAY1"
+      },
+      {
+        "text": "关灯睡",
+        "effects": {},
+        "next": "END_DAY1"
+      }
+    ],
+    "aiStage": "D1_NIGHT"
+  },
+  "END_DAY1": {
+    "id": "END_DAY1",
+    "title": "第一天结束",
+    "room": "room_bedroom",
+    "night": true,
+    "lockDoors": false,
+    "showNpcs": [
+      "sisi",
+      "boss"
+    ],
+    "npcPose": {
+      "sisi": {
+        "x": 980,
+        "sprite": "sisi_idle"
+      },
+      "boss": {
+        "x": 1450,
+        "sprite": "boss_idle"
+      }
+    },
+    "ending": true,
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "system",
+        "text": "第一天结束。你与「家人」活过了最危险的初夜。"
+      },
+      {
+        "speaker": "system",
+        "text": "存档已写入。后续天数资源与提示词已预置。点击继续进入结算。"
+      }
+    ],
+    "choices": [
+      {
+        "text": "进入结算",
+        "effects": {
+          "flags.day1_cleared": true
+        },
+        "next": null,
+        "showEnd": true
+      }
+    ],
+    "aiStage": "D1_NIGHT"
+  }
+}

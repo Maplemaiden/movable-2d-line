@@ -1,0 +1,111 @@
+[
+  {
+    "id": "blood_stain",
+    "room": "room_xuanguan",
+    "x": 720,
+    "label": "血迹",
+    "type": "observe",
+    "text": "地板上的红……像水渍。大概吧。反正我看不太清。",
+    "nodes": ["P04", "D1-01"]
+  },
+  {
+    "id": "front_door_observe",
+    "room": "room_xuanguan",
+    "x": 2000,
+    "label": "房门",
+    "type": "observe",
+    "text": "门缝里透出一点凉气。里面像有人在等。",
+    "nodes": ["P04"]
+  },
+  {
+    "id": "red_dress",
+    "room": "room_living",
+    "x": 1080,
+    "label": "红裙",
+    "type": "observe",
+    "text": "不是水。是血。但她在发抖。",
+    "clue": "wetDress",
+    "prop": "red_dress",
+    "nodes": ["D1-02", "D1-03", "D1-03b", "FREE_D1"]
+  },
+  {
+    "id": "mop",
+    "room": "room_living",
+    "x": 760,
+    "label": "拖把",
+    "type": "pickup",
+    "text": "我把拖把拿起来了。地板总得有人拖。",
+    "inventory": "mop",
+    "prop": "mop",
+    "nodes": ["D1-02", "D1-03", "D1-03b", "FREE_D1", "D1-04", "D1-05", "END_DAY1"]
+  },
+  {
+    "id": "towel",
+    "room": "room_bathroom",
+    "x": 1100,
+    "label": "热毛巾",
+    "type": "pickup",
+    "text": "温热的毛巾。给孩子擦脸正好。",
+    "inventory": "towel",
+    "prop": "towel",
+    "trust": { "sisi": 1 },
+    "nodes": ["D1-02", "D1-03", "D1-03b", "FREE_D1"]
+  },
+  {
+    "id": "window",
+    "room": "room_living",
+    "x": 1860,
+    "label": "窗户",
+    "type": "observe",
+    "text": "楼很高。外面像有黑雾在游。",
+    "nodes": ["D1-02", "D1-03", "D1-03b", "FREE_D1", "D1-05", "END_DAY1"]
+  },
+  {
+    "id": "light_switch",
+    "room": "room_living",
+    "x": 420,
+    "label": "灯开关",
+    "type": "toggle_light",
+    "text": "咔哒。光线变了一点。",
+    "nodes": ["FREE_D1", "D1-05", "END_DAY1"]
+  },
+  {
+    "id": "fridge",
+    "room": "room_kitchen",
+    "x": 700,
+    "label": "冰箱",
+    "type": "observe",
+    "text": "冰箱里有菜。还有一些……我选择当作是肉。",
+    "nodes": ["FREE_D1", "D1-04"]
+  },
+  {
+    "id": "table",
+    "room": "room_kitchen",
+    "x": 1200,
+    "label": "餐桌",
+    "type": "story",
+    "text": "餐桌已经摆好了。",
+    "triggerNode": "D1-04",
+    "prop": "meat_dish",
+    "nodes": ["FREE_D1", "D1-04"]
+  },
+  {
+    "id": "bed",
+    "room": "room_bedroom",
+    "x": 1200,
+    "label": "床",
+    "type": "story",
+    "text": "床铺得很整齐，却有一股冷意。",
+    "triggerNode": "D1-05",
+    "nodes": ["FREE_D1", "D1-05"]
+  },
+  {
+    "id": "bathtub",
+    "room": "room_bathroom",
+    "x": 1500,
+    "label": "浴缸",
+    "type": "observe",
+    "text": "瓷砖缝里有淡淡的红。我当它是铁锈。",
+    "nodes": ["D1-02", "D1-03b", "FREE_D1"]
+  }
+]

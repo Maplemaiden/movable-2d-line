@@ -1,0 +1,30 @@
+{
+  "sisi": {
+    "id": "sisi",
+    "displayName": "秦思思",
+    "idle": "sisi_idle",
+    "walk": ["sisi_walk1", "sisi_walk2"],
+    "hug": "sisi_hug",
+    "redIdle": "sisi_red_idle",
+    "height": 300
+  },
+  "boss": {
+    "id": "boss",
+    "displayName": "？？？",
+    "idle": "boss_idle",
+    "walk": ["boss_walk1", "boss_walk2"],
+    "height": 400
+  },
+  "liuaiguo": {
+    "id": "liuaiguo",
+    "displayName": "刘爱国",
+    "idle": "liuaiguo_idle",
+    "height": 380
+  },
+  "licuilan": {
+    "id": "licuilan",
+    "displayName": "李翠兰",
+    "idle": "licuilan_idle",
+    "height": 360
+  }
+}
