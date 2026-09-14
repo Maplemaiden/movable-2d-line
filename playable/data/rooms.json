@@ -12,8 +12,14 @@
   "room_living": {
     "id": "room_living",
     "name": "客厅",
-    "bg": "bg_living_day",
+    "bg": "bg_living_dirty",
     "bgNight": "bg_living_night",
+    "variants": {
+      "default": "bg_living_dirty",
+      "dirty": "bg_living_dirty",
+      "clean": "bg_living_clean",
+      "night": "bg_living_night"
+    },
     "width": 2560,
     "spawnX": 360,
     "doors": [
@@ -38,6 +44,10 @@
     "name": "卧室",
     "bg": "bg_bedroom_day",
     "bgNight": "bg_bedroom_night",
+    "variants": {
+      "default": "bg_bedroom_day",
+      "night": "bg_bedroom_night"
+    },
     "width": 2560,
     "spawnX": 360,
     "doors": [
@@ -53,5 +63,55 @@
     "doors": [
       { "id": "to_living_bath", "x": 180, "target": "room_living", "targetX": 980, "label": "回客厅" }
     ]
+  },
+  "room_corridor": {
+    "id": "room_corridor",
+    "name": "楼道",
+    "bg": "bg_corridor_visit",
+    "width": 2560,
+    "spawnX": 520,
+    "doors": [
+      { "id": "to_home_from_corridor", "x": 200, "target": "room_corridor", "targetX": 520, "label": "回 30 层" }
+    ]
+  },
+  "room_visit_hostile": {
+    "id": "room_visit_hostile",
+    "name": "邻家 · 双生",
+    "bg": "bg_room_twins",
+    "width": 2560,
+    "spawnX": 400,
+    "doors": []
+  },
+  "room_visit_friendly": {
+    "id": "room_visit_friendly",
+    "name": "邻家 · 母子",
+    "bg": "bg_room_mother_boy",
+    "width": 2560,
+    "spawnX": 400,
+    "doors": []
+  },
+  "room_visit_puzzle": {
+    "id": "room_visit_puzzle",
+    "name": "邻家 · 扮演",
+    "bg": "bg_room_cosplay",
+    "width": 2560,
+    "spawnX": 400,
+    "doors": []
+  },
+  "room_visit_empty": {
+    "id": "room_visit_empty",
+    "name": "空层残留",
+    "bg": "bg_floor10_bones",
+    "width": 2560,
+    "spawnX": 400,
+    "doors": []
+  },
+  "room_gates": {
+    "id": "room_gates",
+    "name": "异世之门",
+    "bg": "bg_otherworld_gates",
+    "width": 2560,
+    "spawnX": 960,
+    "doors": []
   }
 }

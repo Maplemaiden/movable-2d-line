@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>幸福之家 · 可移动2D · Day1</title>
+  <title>幸福之家 · 可移动2D</title>
   <style>
     :root {
       --bg: #070b12;
@@ -30,52 +30,299 @@
       position: relative; box-shadow: 0 20px 80px rgba(0,0,0,.55);
       border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #000;
     }
-    canvas { display: block; }
+    #game-canvas {
+      position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;
+    }
+    #game-canvas canvas { display: block; width: 100%; height: 100%; }
     #hud {
-      position: absolute; left: 16px; right: 16px; top: 12px; z-index: 5;
-      display: flex; gap: 12px; align-items: stretch; pointer-events: none;
+      position: absolute; left: 12px; right: 12px; top: 10px; z-index: 5;
+      display: grid;
+      grid-template-columns: minmax(150px, 1fr) minmax(180px, 1.6fr) auto;
+      gap: 10px;
+      align-items: start;
+      pointer-events: none;
+    }
+    #hud-left, #hud-center, #hud-right {
+      display: flex; align-items: flex-start; min-width: 0;
+    }
+    #hud-center { justify-content: center; }
+    #hud-right {
+      justify-content: flex-end; gap: 8px; margin-left: 0; flex-shrink: 0;
+      pointer-events: none;
     }
     .hud-card {
       pointer-events: auto;
       background: var(--panel); backdrop-filter: blur(10px);
       border: 1px solid var(--line); border-radius: 12px;
-      padding: 10px 14px; min-width: 180px;
+      padding: 8px 12px; min-width: 0;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
     }
     .hud-card b { color: var(--accent); font-weight: 600; }
-    .hud-card .sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    .hud-card .sub { color: var(--muted); font-size: 12px; margin-top: 3px; }
+    .hud-card .sub-row {
+      display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center;
+      color: var(--muted); font-size: 12px; margin-top: 3px;
+    }
+    #horror-meter {
+      pointer-events: auto;
+      min-width: 118px;
+      background: linear-gradient(180deg, rgba(28,12,14,.9), rgba(10,16,28,.86));
+      border: 1px solid rgba(196,92,92,.5);
+      border-radius: 12px;
+      padding: 7px 10px 8px;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      box-shadow: 0 6px 20px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.05);
+    }
+    #horror-meter:hover { border-color: rgba(255,140,140,.75); }
+    #horror-meter .hm-label {
+      font-size: 10px; letter-spacing: .1em; color: #d8a0a0;
+    }
+    #horror-meter .hm-row {
+      display: flex; align-items: baseline; gap: 3px; margin-top: 1px;
+    }
+    #hud-horror {
+      font-size: 22px; font-weight: 700; line-height: 1;
+      font-variant-numeric: tabular-nums;
+      color: var(--danger);
+      text-decoration: none;
+    }
+    #horror-meter .hm-max { font-size: 11px; color: var(--muted); }
+    #horror-meter .hm-bar {
+      margin-top: 5px; height: 5px; border-radius: 999px;
+      background: rgba(255,255,255,.08); overflow: hidden;
+    }
+    #horror-bar {
+      display: block; height: 100%; width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #7aae8a, #d4a84b, #c45c5c);
+      transition: width .25s ease;
+    }
+    #horror-band {
+      margin-top: 4px; font-size: 10px; color: var(--muted);
+    }
+    #hud-horror.band-calm { color: #7aae8a; }
+    #hud-horror.band-tense { color: #d4a84b; }
+    #hud-horror.band-danger { color: var(--danger); }
+    #hud-horror.band-dead { color: #ff6b6b; }
+    #btn-settings {
+      pointer-events: auto;
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    #btn-settings:hover { border-color: var(--accent); color: var(--accent); }
+    #horror-flash {
+      position: absolute; right: 68px; top: 72px; z-index: 12;
+      pointer-events: none; font-size: 15px; font-weight: 700;
+      text-shadow: 0 1px 4px #000; opacity: 0; transition: opacity .15s ease;
+    }
+    #horror-flash.show { opacity: 1; }
+    #horror-flash.up { color: #ff8a8a; }
+    #horror-flash.down { color: #8fd4a8; }
+    #settingsPanel {
+      position: absolute; inset: 0; z-index: 19; display: none; place-items: center;
+      background: rgba(0,0,0,.55); backdrop-filter: blur(4px);
+    }
+    #settingsPanel.open { display: grid; }
+    .settings-shell {
+      width: min(460px, 92%); max-height: 82%; overflow: auto;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+      padding: 18px 18px 16px;
+    }
+    .settings-shell h2 { margin: 0 0 4px; font-size: 20px; }
+    .settings-shell .lead {
+      margin: 0 0 14px; color: var(--muted); font-size: 12px; line-height: 1.5;
+    }
+    .settings-section {
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding: 12px 0;
+    }
+    .settings-section h3 {
+      margin: 0 0 10px; font-size: 13px; color: var(--accent); font-weight: 600;
+    }
+    .settings-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      margin-bottom: 10px; font-size: 13px;
+    }
+    .settings-row:last-child { margin-bottom: 0; }
+    .settings-row label { color: var(--text); }
+    .settings-row input[type="range"] { width: 140px; accent-color: var(--accent); }
+    .settings-row select, .settings-actions button, .settings-shell button {
+      font: inherit; cursor: pointer;
+      border: 1px solid var(--line); background: rgba(255,255,255,.04);
+      color: var(--text); border-radius: 10px; padding: 8px 12px;
+    }
+    .settings-row select { padding: 6px 10px; }
+    .settings-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .settings-actions button.primary {
+      border-color: rgba(142,182,216,.5); background: rgba(142,182,216,.15);
+    }
+    .settings-actions button.danger {
+      border-color: rgba(196,92,92,.5); color: #ffb0b0;
+    }
+    #settingsSaveBlock[hidden] { display: none !important; }
+    #settingsSaveBlock .slot-list { margin: 8px 0 0; }
+    .toggle-btn[aria-pressed="true"] {
+      border-color: rgba(122,174,138,.55); background: rgba(122,174,138,.18); color: #b6e0c2;
+    }
+    #horrorPanel {
+      position: absolute; inset: 0; z-index: 16; background: rgba(0,0,0,.55);
+      display: grid; place-items: center;
+    }
+    #horrorPanel[hidden] { display: none !important; }
+    .horror-shell {
+      width: min(520px, 92%); max-height: 74%; overflow: hidden; display: flex; flex-direction: column;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+    }
+    .horror-shell header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px; border-bottom: 1px solid var(--line); gap: 8px;
+    }
+    .horror-meta {
+      padding: 10px 16px; font-size: 12px; color: var(--muted); line-height: 1.55;
+      border-bottom: 1px solid var(--line);
+    }
+    .horror-meta b { color: var(--accent); font-weight: 600; }
+    #horrorList { overflow: auto; padding: 12px 16px; }
+    .horror-item {
+      display: grid; grid-template-columns: 72px 1fr; gap: 8px;
+      margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .horror-item .delta { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 15px; }
+    .horror-item .delta.up { color: #ff8a8a; }
+    .horror-item .delta.down { color: #8fd4a8; }
+    .horror-item .delta.zero { color: var(--muted); }
+    .horror-item .why { margin: 0; color: var(--text); font-size: 13px; line-height: 1.45; }
+    .horror-item .meta { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+    #death-card {
+      position: absolute; inset: 0; z-index: 20; display: none; place-items: center;
+      background: rgba(20, 4, 4, .78);
+    }
+    #death-card.open { display: grid; }
+    #death-card .card {
+      width: min(440px, 90%); background: var(--panel); border: 1px solid var(--danger);
+      border-radius: 16px; padding: 22px 20px;
+    }
     #hint {
-      margin-left: auto; align-self: flex-start;
-      background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
-      padding: 8px 14px; font-size: 13px; color: var(--muted);
+      position: absolute; left: 50%; bottom: 26%; z-index: 6;
+      transform: translateX(-50%);
+      background: rgba(8,12,20,.78); border: 1px solid var(--line); border-radius: 999px;
+      padding: 7px 14px; font-size: 12px; color: var(--muted);
+      max-width: min(420px, 70vw); text-align: center;
+      pointer-events: none; opacity: 0; transition: opacity .45s ease;
     }
+    #hint.show { opacity: 1; }
     #dialogue {
-      position: absolute; left: 4%; right: 4%; bottom: 4%; z-index: 8;
-      display: none; flex-direction: column; gap: 10px;
+      position: absolute; left: 0; right: 0; bottom: 0; top: 0; z-index: 8;
+      display: none; pointer-events: none;
     }
-    #dialogue.open { display: flex; }
+    #dialogue.open { display: block; pointer-events: none; }
+    #dialogue.open .dlg-panel,
+    #dialogue.open .dlg-toolbar button,
+    #dialogue.open .dlg-choices button,
+    #dialogue.open #ai-row { pointer-events: auto; }
+
+    #vn-stage-chars {
+      position: absolute; left: 0; right: 0; bottom: 12%; height: 62%;
+      z-index: 1; pointer-events: none; overflow: hidden;
+      opacity: 0; transition: opacity .28s ease;
+    }
+    #vn-stage-chars.has-chars { opacity: 1; }
+    .vn-character {
+      position: absolute; bottom: 0; width: min(32%, 360px); height: 100%;
+      overflow: hidden; opacity: 0;
+      transition: opacity .35s ease, transform .55s cubic-bezier(.22,.8,.28,1), filter .3s ease;
+    }
+    .vn-character.side-left { left: 1%; transform: translateX(-24%); }
+    .vn-character.side-right { right: 1%; transform: translateX(24%); }
+    .vn-character.is-visible { opacity: 1; transform: translateX(0); }
+    .vn-character.is-dim { opacity: .4; filter: brightness(.72); }
+    .vn-character.is-focus { opacity: 1; filter: brightness(1.05); }
+    .vn-character img {
+      position: absolute; left: 50%; bottom: -42%;
+      height: 150%; width: auto; max-width: none;
+      transform: translateX(-50%);
+      object-fit: contain; object-position: center top;
+      filter: drop-shadow(0 12px 24px rgba(0,0,0,.45));
+      user-select: none; -webkit-user-drag: none;
+    }
+
     .dlg-panel {
-      background:
-        linear-gradient(180deg, rgba(12,18,30,.72), rgba(8,12,22,.94)),
-        url('./assets/ui/ui_dialogue_panel.png') center/cover no-repeat;
-      border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px 14px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 10px 40px rgba(0,0,0,.45);
+      position: absolute; left: 3.5%; right: 3.5%; bottom: 3.5%;
+      z-index: 2;
+      min-height: 22%;
+      padding: 16px 26px 22px;
+      border-radius: 12px;
+      background: rgba(48, 50, 58, 0.78);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 12px 36px rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+      display: flex; flex-direction: column; gap: 8px;
+      color: #f3f5f8;
     }
-    #btn-mute { pointer-events: auto; }
+    .dlg-panel.is-system {
+      background: rgba(24, 28, 38, 0.86);
+      border-color: rgba(140, 180, 255, 0.22);
+    }
+    #dlg-portrait-wrap { display: none !important; }
+    .dlg-toolbar {
+      display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 2px;
+      opacity: .85; align-items: center;
+    }
+    .dlg-toolbar.collapsed .dlg-tools { display: none; }
+    .dlg-tools { display: flex; gap: 6px; flex-wrap: wrap; }
+    #dlg-tools-toggle {
+      appearance: none; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.75); border-radius: 8px; padding: 4px 10px; cursor: pointer; font-size: 12px;
+      min-width: 34px;
+    }
+    #dlg-tools-toggle:hover { border-color: rgba(180,210,255,.45); color: #fff; }
+    .dlg-toolbar button {
+      appearance: none; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.7); border-radius: 8px; padding: 4px 10px; cursor: pointer; font-size: 12px;
+    }
+    .dlg-toolbar button.on, .dlg-toolbar button:hover {
+      border-color: rgba(180,210,255,.45); color: #fff; background: rgba(142,182,216,.18);
+    }
     .dlg-name {
-      display: inline-block; font-size: 13px; letter-spacing: .08em;
-      color: var(--accent); border: 1px solid var(--line); border-radius: 999px;
-      padding: 3px 10px; margin-bottom: 8px; background: rgba(255,255,255,.03);
+      display: inline-block; align-self: flex-start;
+      font-size: 14px; font-weight: 600; letter-spacing: .06em;
+      color: #fff; border: none; border-radius: 6px;
+      padding: 4px 12px; margin: 0; background: rgba(255,255,255,.14);
     }
-    .dlg-text { font-size: 18px; line-height: 1.65; min-height: 58px; }
-    .dlg-choices { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    .dlg-choices button, #ai-row button, #debug button, #boot button {
+    .dlg-name.system { background: rgba(120,160,255,.28); color: #dce8ff; }
+    .dlg-name.danmaku { background: rgba(255,140,160,.28); color: #ffd0d8; }
+    .dlg-name:empty { display: none; }
+    .dlg-text {
+      font-size: clamp(16px, 2vw, 21px); line-height: 1.7; min-height: 58px;
+      white-space: pre-wrap; margin: 0;
+    }
+    .dlg-hint {
+      position: absolute; right: 18px; bottom: 10px;
+      font-size: 12px; color: rgba(255,255,255,.5);
+      animation: vn-blink 1.2s ease-in-out infinite;
+    }
+    @keyframes vn-blink {
+      0%,100% { opacity: .35; } 50% { opacity: 1; }
+    }
+    .dlg-choices { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .dlg-choices button, #ai-row button, #debug button, #boot button, #savePanel button, #end-card button, #settingsPanel button, #death-card button {
       appearance: none; border: 1px solid var(--line); background: rgba(255,255,255,.04);
       color: var(--text); border-radius: 10px; padding: 10px 14px; cursor: pointer;
       transition: .15s ease; font-size: 14px;
     }
-    .dlg-choices button:hover, #ai-row button:hover, #debug button:hover, #boot button:hover {
+    .dlg-choices button:hover, #ai-row button:hover, #debug button:hover, #boot button:hover,
+    #savePanel button:hover, #end-card button:hover, #settingsPanel button:hover, #death-card button:hover {
       border-color: var(--accent); background: rgba(142,182,216,.12);
     }
     #ai-row { display: none; gap: 8px; margin-top: 8px; }
@@ -94,14 +341,40 @@
       position: absolute; inset: 0; z-index: 20; display: grid; place-items: center;
       background: radial-gradient(800px 500px at 50% 40%, #182236, #05070c);
     }
-    #boot .card {
+    #loading {
+      position: absolute; inset: 0; z-index: 21; display: none; place-items: center;
+      background: radial-gradient(900px 560px at 50% 42%, #141c2c, #05070c);
+    }
+    #loading.show { display: grid; }
+    .loading-card {
+      width: min(420px, 88%); text-align: center; padding: 28px 24px 24px;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.45);
+    }
+    .loading-card h2 {
+      margin: 0 0 6px; font-size: 22px; letter-spacing: .06em; font-weight: 600;
+    }
+    #loading-text { margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.5; min-height: 1.5em; }
+    .loading-track {
+      height: 8px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden;
+    }
+    #loading-bar {
+      display: block; height: 100%; width: 0%; border-radius: inherit;
+      background: linear-gradient(90deg, #6a90b4, #8eb6d8);
+      transition: width .15s ease;
+    }
+    #loading-pct {
+      margin-top: 10px; font-size: 12px; color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+    #boot .card, #savePanel .card, #end-card .card {
       width: min(520px, 92%); background: var(--panel); border: 1px solid var(--line);
       border-radius: 18px; padding: 28px; text-align: left;
       box-shadow: 0 30px 80px rgba(0,0,0,.5);
     }
     #boot h1 { margin: 0 0 8px; font-size: 28px; letter-spacing: .04em; }
     #boot p { color: var(--muted); line-height: 1.6; margin: 0 0 18px; }
-    #boot .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    #boot .row, #savePanel .row { display: flex; gap: 10px; flex-wrap: wrap; }
     #debug {
       position: absolute; right: 12px; bottom: 12px; z-index: 15; display: none;
       width: 320px; max-height: 50%; overflow: auto; background: rgba(0,0,0,.82);
@@ -109,31 +382,65 @@
     }
     #debug.open { display: block; }
     #debug pre { white-space: pre-wrap; color: #b8c4d4; margin: 8px 0; }
+    #cheatPanel {
+      position: absolute; inset: 0; z-index: 22; display: none; place-items: center;
+      background: rgba(0,0,0,.62); backdrop-filter: blur(4px);
+    }
+    #cheatPanel.open { display: grid; }
+    #cheatPanel .card {
+      width: min(560px, 92%); background: var(--panel); border: 1px solid var(--line);
+      border-radius: 16px; padding: 22px 20px; box-shadow: 0 24px 64px rgba(0,0,0,.5);
+    }
+    #cheatPanel h2 { margin: 0 0 6px; font-size: 18px; }
+    #cheatPanel .sub { margin: 0 0 14px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    #cheatList {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 52vh; overflow: auto;
+    }
+    #cheatList button {
+      appearance: none; text-align: left; border: 1px solid var(--line);
+      background: rgba(255,255,255,.04); color: var(--text); border-radius: 10px;
+      padding: 10px 12px; cursor: pointer; font-size: 13px; line-height: 1.35;
+    }
+    #cheatList button:hover { border-color: var(--accent); background: rgba(142,182,216,.14); }
+    #cheatList button small { display: block; color: var(--muted); font-size: 11px; margin-top: 2px; }
+    #cheatPanel .cheat-foot { margin-top: 14px; display: flex; gap: 8px; justify-content: flex-end; }
     #api-toast {
-      position: absolute; left: 50%; top: 64px; transform: translateX(-50%);
+      position: absolute; left: 50%; top: 78px; transform: translateX(-50%);
       z-index: 12; display: none; background: rgba(0,0,0,.75); border: 1px solid var(--line);
       padding: 8px 14px; border-radius: 999px; font-size: 12px; color: var(--muted);
+      max-width: min(480px, 70vw); text-align: center;
     }
-    #end-card {
+    #api-toast.show { display: block; }
+    #end-card, #savePanel {
       position: absolute; inset: 0; z-index: 18; display: none; place-items: center;
       background: rgba(0,0,0,.55); backdrop-filter: blur(4px);
     }
-    #end-card.open { display: grid; }
-    #end-card .card {
-      width: min(480px, 90%); background: var(--panel); border: 1px solid var(--line);
-      border-radius: 18px; padding: 24px;
+    #end-card.open, #savePanel.open { display: grid; }
+    #floor-bar {
+      position: absolute; inset: 0; z-index: 40; display: none;
+      place-items: end center; padding: 0 12px 72px;
+      background: rgba(0,0,0,.45); pointer-events: auto;
     }
-    #pad {
-      position: absolute; left: 18px; bottom: 18px; z-index: 7;
-      display: flex; gap: 10px; pointer-events: none;
+    #floor-bar.open { display: grid; }
+    #floor-bar .card {
+      width: min(520px, 94vw); max-height: min(62vh, 520px);
+      overflow: auto; background: var(--panel); border: 1px solid var(--line);
+      border-radius: 14px; padding: 14px 16px 16px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.45);
     }
-    #pad button {
-      pointer-events: auto; width: 64px; height: 64px; border-radius: 16px;
-      border: 1px solid var(--line); background: rgba(8,12,20,.72); color: var(--text);
-      font-size: 28px; cursor: pointer; backdrop-filter: blur(8px);
+    #floor-bar h2 { margin: 0 0 4px; font-size: 18px; }
+    #floor-bar .sub { color: var(--muted); font-size: 12px; margin: 0 0 10px; line-height: 1.45; }
+    #floor-list { display: grid; gap: 8px; margin-bottom: 12px; }
+    #floor-list button {
+      text-align: left; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid var(--line); background: rgba(255,255,255,.04);
+      color: var(--text); cursor: pointer; font: inherit;
     }
-    #pad button:active, #pad button.held { background: rgba(142,182,216,.25); border-color: var(--accent); }
-    #pad .act { width: auto; padding: 0 18px; font-size: 16px; }
+    #floor-list button:hover { border-color: var(--accent); }
+    #floor-list button .meta { display: block; color: var(--muted); font-size: 11px; margin-top: 2px; }
+    #floor-list button.done { opacity: .72; }
+    #floor-list button.danger { border-color: rgba(196,92,92,.55); }
+    #floor-bar .row { display: flex; gap: 8px; flex-wrap: wrap; }
     #guide {
       position: absolute; z-index: 6; display: none; pointer-events: none;
       transform: translate(-50%, -100%);
@@ -149,41 +456,147 @@
     }
     @keyframes bob { 0%,100% { translate: 0 0; } 50% { translate: 0 -8px; } }
     #objective {
-      position: absolute; left: 50%; top: 70px; transform: translateX(-50%); z-index: 6;
+      position: static; transform: none; left: auto; top: auto; z-index: auto;
       display: none; pointer-events: none;
-      background: rgba(8,12,20,.82); border: 1px solid var(--line); border-radius: 999px;
-      padding: 8px 16px; font-size: 14px; color: var(--accent);
+      background: rgba(8,12,20,.82); border: 1px solid rgba(142,182,216,.35); border-radius: 999px;
+      padding: 8px 14px; font-size: 13px; color: var(--accent);
+      max-width: min(520px, 100%);
+      text-align: center; line-height: 1.35;
+      box-shadow: 0 8px 24px rgba(0,0,0,.28);
     }
     #objective.open { display: block; }
+    #pad {
+      position: absolute; left: 14px; bottom: 14px; z-index: 7;
+      display: none; gap: 8px; pointer-events: none;
+    }
+    #pad.visible { display: flex; }
+    #pad button {
+      pointer-events: auto; width: 56px; height: 56px; border-radius: 14px;
+      border: 1px solid var(--line); background: rgba(8,12,20,.72); color: var(--text);
+      font-size: 24px; cursor: pointer; backdrop-filter: blur(8px);
+    }
+    #pad button:active, #pad button.held { background: rgba(142,182,216,.25); border-color: var(--accent); }
+    #pad .act { width: auto; padding: 0 14px; font-size: 14px; }
+    #danmaku-layer {
+      position: absolute; inset: 0; z-index: 7; pointer-events: none; overflow: hidden;
+    }
+    .danmaku-line {
+      position: absolute; white-space: nowrap; color: #f0d78c; font-size: 15px;
+      text-shadow: 0 1px 2px #000; opacity: .92;
+      animation: danmaku-fly 7s linear forwards;
+    }
+    @keyframes danmaku-fly {
+      from { transform: translateX(0); }
+      to { transform: translateX(-120vw); }
+    }
+    #historyPanel {
+      position: absolute; inset: 0; z-index: 16; background: rgba(0,0,0,.55);
+      display: grid; place-items: center;
+    }
+    #historyPanel[hidden] { display: none !important; }
+    .history-shell {
+      width: min(560px, 92%); max-height: 70%; overflow: hidden; display: flex; flex-direction: column;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+    }
+    .history-shell header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px; border-bottom: 1px solid var(--line);
+    }
+    #historyList { overflow: auto; padding: 12px 16px; }
+    .history-item { margin-bottom: 12px; }
+    .history-item .who { margin: 0; color: var(--accent); font-size: 12px; }
+    .history-item .msg { margin: 4px 0 0; color: var(--text); line-height: 1.5; font-size: 14px; }
+    .slot-list { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+    .slot-row { display: flex; gap: 8px; align-items: center; }
+    .slot-row span { flex: 1; font-size: 13px; color: var(--muted); }
+    #move-state {
+      position: absolute; left: 12px; top: 64px; z-index: 5;
+      font-size: 11px; color: var(--muted); pointer-events: none;
+      opacity: 0; transition: opacity .25s ease;
+      background: rgba(8,12,20,.72); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 999px; padding: 3px 8px;
+    }
+    #move-state.show { opacity: 1; }
+    .variant-tag {
+      display: inline-block; margin-left: 6px; font-size: 11px; color: var(--ok);
+      border: 1px solid rgba(122,174,138,.4); border-radius: 999px; padding: 1px 8px;
+    }
+    @media (max-width: 900px) {
+      #hud {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+          "left right"
+          "center center";
+      }
+      #hud-left { grid-area: left; }
+      #hud-right { grid-area: right; }
+      #hud-center { grid-area: center; }
+      #objective { font-size: 12px; padding: 7px 12px; }
+    }
   </style>
 </head>
 <body>
   <div id="wrap">
     <div id="game-host">
+      <div id="game-canvas"></div>
+      <div id="move-state" aria-live="polite">移动：锁定</div>
       <div id="hud">
-        <div class="hud-card">
-          <div><b id="hud-node">P04</b> · <span id="hud-room">玄关</span></div>
-          <div class="sub">Day <span id="hud-day">1</span> · 存活 <span id="hud-alive">30</span> · 信任 思思<span id="hud-ts">0</span>/Boss<span id="hud-tb">0</span></div>
+        <div id="hud-left">
+          <div class="hud-card">
+            <div><b id="hud-room">玄关</b><span id="hud-variant" class="variant-tag" hidden></span></div>
+            <div class="sub-row">
+              <span>Day <span id="hud-day">1</span></span>
+              <span>存活 <span id="hud-alive">30</span></span>
+              <span id="hud-cards-wrap" hidden>卡 <span id="hud-cards">0</span></span>
+              <span>信任 思思<span id="hud-ts">0</span>/Boss<span id="hud-tb">0</span></span>
+            </div>
+            <div class="sub" style="display:none"><span id="hud-node">P04</span></div>
+          </div>
         </div>
-        <div class="hud-card">
-          <div>背包</div>
-          <div class="sub" id="hud-inv">空</div>
+        <div id="hud-center">
+          <div id="objective">目标：进入客厅</div>
         </div>
-        <div id="hint">A/D 移动 · E 互动 · C AI对话 · ~ 调试</div>
-        <button type="button" id="btn-mute" class="hud-card" style="cursor:pointer;min-width:auto">音效:开</button>
+        <div id="hud-right">
+          <button type="button" id="horror-meter" title="点击查看惊悚变动记录">
+            <div class="hm-label">惊悚</div>
+            <div class="hm-row">
+              <span id="hud-horror">0</span>
+              <span class="hm-max">/100</span>
+            </div>
+            <div class="hm-bar" aria-hidden="true"><i id="horror-bar"></i></div>
+            <div id="horror-band">平稳</div>
+          </button>
+          <button type="button" id="btn-settings" title="设置（Esc）" aria-label="设置">⚙</button>
+        </div>
       </div>
+      <div id="hint">A/D 移动 · E 互动 · C 对话 · Esc 设置</div>
+      <div id="horror-flash" aria-hidden="true"></div>
+      <div id="danmaku-layer" aria-hidden="true"></div>
       <div id="prompt">E 互动</div>
       <div id="guide">向右走</div>
-      <div id="objective">目标：进入客厅</div>
-      <div id="pad">
+      <div id="pad" aria-label="虚拟方向键">
         <button type="button" id="btn-left" aria-label="左移">◀</button>
         <button type="button" id="btn-right" aria-label="右移">▶</button>
-        <button type="button" id="btn-act" class="act" aria-label="互动">E 互动</button>
+        <button type="button" id="btn-act" class="act" aria-label="互动">E</button>
       </div>
       <div id="dialogue">
-        <div class="dlg-panel">
+        <div id="vn-stage-chars" aria-hidden="true">
+          <div class="vn-character side-left" id="vn-char-left"><img alt="" draggable="false" /></div>
+          <div class="vn-character side-right" id="vn-char-right"><img alt="" draggable="false" /></div>
+        </div>
+        <div class="dlg-panel" id="dlg-panel">
+          <div class="dlg-toolbar collapsed" id="dlg-toolbar">
+            <button type="button" id="dlg-tools-toggle" title="对话工具" aria-expanded="false">⋯</button>
+            <div class="dlg-tools" id="dlg-tools">
+              <button type="button" id="dlg-back">回退</button>
+              <button type="button" id="dlg-history">历史</button>
+              <button type="button" id="dlg-auto" aria-pressed="false">自动</button>
+              <button type="button" id="dlg-skip" aria-pressed="false">跳过</button>
+            </div>
+          </div>
           <div class="dlg-name" id="dlg-name">系统</div>
           <div class="dlg-text" id="dlg-text"></div>
+          <div class="dlg-hint" id="dlg-hint">▼</div>
           <div class="dlg-choices" id="dlg-choices"></div>
           <div id="ai-row">
             <input id="ai-input" placeholder="直接对 NPC 说点什么…" maxlength="120" />
@@ -192,7 +605,119 @@
           </div>
         </div>
       </div>
+      <div id="historyPanel" hidden>
+        <div class="history-shell" role="dialog" aria-label="对话历史">
+          <header>
+            <strong>对话历史</strong>
+            <button type="button" id="historyClose">关闭</button>
+          </header>
+          <div id="historyList"></div>
+        </div>
+      </div>
+      <div id="horrorPanel" hidden>
+        <div class="horror-shell" role="dialog" aria-label="惊悚值记录">
+          <header>
+            <strong>惊悚值记录</strong>
+            <button type="button" id="horrorClose">关闭</button>
+          </header>
+          <div class="horror-meta" id="horrorMeta"></div>
+          <div id="horrorList"></div>
+        </div>
+      </div>
+      <div id="death-card">
+        <div class="card">
+          <h2 style="margin:0 0 8px;color:var(--danger)">惊悚值 100 · 死亡</h2>
+          <p style="color:var(--muted);line-height:1.6;margin:0">
+            原书规则：害怕程度到顶即死，与心跳无关。通关积分 = 100 − 通关时惊悚值；99 通关只得 1 分，0 通关得满分。
+          </p>
+          <p id="death-stats" style="color:var(--accent);font-size:13px;line-height:1.5;margin:12px 0 0"></p>
+          <div class="row" style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+            <button type="button" id="death-log">查看惊悚记录</button>
+            <button type="button" id="death-restart">重新开始</button>
+          </div>
+        </div>
+      </div>
       <div id="api-toast"></div>
+      <div id="settingsPanel">
+        <div class="settings-shell" role="dialog" aria-label="设置">
+          <h2>设置</h2>
+          <p class="lead">Esc 或右上角 ⚙ 打开/关闭。存档请在本页操作。</p>
+
+          <div class="settings-section">
+            <h3>音频</h3>
+            <div class="settings-row">
+              <label for="opt-sfx-mute">音效</label>
+              <button type="button" class="toggle-btn" id="opt-sfx-mute" aria-pressed="false">开启</button>
+            </div>
+            <div class="settings-row">
+              <label for="opt-sfx-vol">音效音量</label>
+              <input type="range" id="opt-sfx-vol" min="0" max="100" value="70" />
+            </div>
+            <div class="settings-row">
+              <label for="opt-bgm-mute">背景音乐</label>
+              <button type="button" class="toggle-btn" id="opt-bgm-mute" aria-pressed="false">开启</button>
+            </div>
+            <div class="settings-row">
+              <label for="opt-bgm-vol">音乐音量</label>
+              <input type="range" id="opt-bgm-vol" min="0" max="100" value="35" />
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3>状态</h3>
+            <div class="settings-row">
+              <label>背包</label>
+              <span id="hud-inv" style="color:var(--muted);font-size:13px;text-align:right;max-width:60%">空</span>
+            </div>
+            <div class="settings-row">
+              <label>节点</label>
+              <span id="settings-node" style="color:var(--muted);font-size:13px">P04</span>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3>显示与对话</h3>
+            <div class="settings-row">
+              <label for="opt-danmaku">弹幕</label>
+              <button type="button" class="toggle-btn" id="opt-danmaku" aria-pressed="true">显示</button>
+            </div>
+            <div class="settings-row">
+              <label for="opt-pad">虚拟方向键</label>
+              <button type="button" class="toggle-btn" id="opt-pad" aria-pressed="true">显示</button>
+            </div>
+            <div class="settings-row">
+              <label for="opt-auto-speed">自动播放速度</label>
+              <select id="opt-auto-speed">
+                <option value="3200">慢</option>
+                <option value="2200" selected>标准</option>
+                <option value="1200">快</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3>存档</h3>
+            <div class="settings-actions">
+              <button type="button" class="primary" id="opt-open-save">打开存档槽位</button>
+              <button type="button" id="opt-quick-save">快速写入槽位 1</button>
+            </div>
+            <div id="settingsSaveBlock" hidden>
+              <p class="lead" style="margin-top:10px">写入当前进度，或读取槽位（读取会刷新页面）。</p>
+              <div class="slot-list" id="settingsSlotList"></div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3>其他</h3>
+            <div class="settings-actions">
+              <button type="button" id="opt-horror-log">惊悚值记录</button>
+              <button type="button" id="opt-title">返回标题</button>
+              <button type="button" class="danger" id="opt-reset">清空进度并重开</button>
+              <button type="button" id="settingsClose">关闭</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div id="debug">
         <div class="row" style="display:flex;gap:6px;flex-wrap:wrap">
           <button type="button" data-jump="P04">P04</button>
@@ -206,28 +731,70 @@
         </div>
         <pre id="debug-pre"></pre>
       </div>
+      <div id="cheatPanel" aria-hidden="true">
+        <div class="card">
+          <h2>开发开挂 · 跳转场景</h2>
+          <p class="sub">按 <b>P</b> 开关本面板。选择后直接进入该节点（会补齐常用进度状态）。</p>
+          <div id="cheatList"></div>
+          <div class="cheat-foot">
+            <button type="button" id="cheatClose">关闭</button>
+          </div>
+        </div>
+      </div>
+      <div id="savePanel">
+        <div class="card">
+          <h2 style="margin:0 0 8px">存档槽位</h2>
+          <p style="color:var(--muted);font-size:13px;line-height:1.5;margin:0">写入当前进度，或从槽位读取（会刷新）。</p>
+          <div class="slot-list" id="saveSlotList"></div>
+          <div class="row">
+            <button type="button" id="saveClose">关闭</button>
+          </div>
+        </div>
+      </div>
       <div id="end-card">
         <div class="card">
-          <h2 style="margin:0 0 8px">第一天 · 通关切片</h2>
-          <p style="color:var(--muted);line-height:1.6">你在 30 层活过了第一夜。存档已写入本地。</p>
+          <h2 id="end-title" style="margin:0 0 8px">本日结算</h2>
+          <p id="end-desc" style="color:var(--muted);line-height:1.6">可在设置里写入多槽存档。</p>
           <p id="end-stats" style="color:var(--accent);font-size:13px;line-height:1.5"></p>
-          <div class="row" style="display:flex;gap:10px;margin-top:12px">
+          <div class="row" style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+            <button type="button" id="end-nextday">进入下一天</button>
+            <button type="button" id="end-save">打开设置 · 存档</button>
             <button type="button" id="end-restart">重新开始</button>
             <button type="button" id="end-stay">留下继续逛</button>
           </div>
         </div>
       </div>
+      <div id="floor-bar" aria-hidden="true">
+        <div class="card">
+          <h2>电梯 · 选层</h2>
+          <p class="sub">当前拜访卡 <b id="floor-bar-cards">0</b> · Day <span id="floor-bar-day">4</span>。已拜访仍可再进（收获可能更少）。</p>
+          <div id="floor-list"></div>
+          <div class="row">
+            <button type="button" id="floor-home">回 30 层（结束拜访）</button>
+            <button type="button" id="floor-close">关闭</button>
+          </div>
+        </div>
+      </div>
+      <div id="loading" aria-live="polite" aria-busy="true">
+        <div class="loading-card">
+          <h2>幸福之家</h2>
+          <p id="loading-text">正在装入…</p>
+          <div class="loading-track" aria-hidden="true"><i id="loading-bar"></i></div>
+          <div id="loading-pct">0%</div>
+        </div>
+      </div>
       <div id="boot">
         <div class="card">
           <h1>幸福之家 · 30层</h1>
-          <p><b style="color:var(--accent)">横版侧视可走</b>：角色在画面里左右移动，不是斜视角。<br/>
-          <b>A / D</b> 或屏幕左右键移动 · <b>E</b> 互动 · <b>C</b> 与 NPC 对话<br/>
-          进入后先看完引导，点「明白了」才能走动。</p>
+          <p><b style="color:var(--accent)">进入后先有旁白教规则</b>，再开始横版走动。<br/>
+          A/D 移动 · E 互动 · C 对话 · 顶部是当前目标<br/>
+          自由阶段靠近餐桌/床会确认后才续播主线。</p>
           <div class="row">
             <button type="button" id="btn-new">新的一天</button>
-            <button type="button" id="btn-continue">读取存档</button>
+            <button type="button" id="btn-continue">读取默认档</button>
+            <button type="button" id="btn-slots">从槽位读取</button>
           </div>
-          <p style="margin-top:16px;font-size:12px;color:var(--muted)">若旧存档卡住，请点「新的一天」。密钥：localStorage.setItem('hh_api_key','...')</p>
+          <p style="margin-top:16px;font-size:12px;color:var(--muted)">卡关请点「新的一天」。API 密钥可在浏览器控制台配置。</p>
         </div>
       </div>
     </div>
@@ -235,7 +802,12 @@
 
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
   <script src="./config.js"></script>
+  <script src="./data/unlock_presets.js"></script>
   <script src="./src/game/StateStore.js"></script>
+  <script src="./src/game/SaveSlots.js"></script>
+  <script src="./src/game/DialogueShell.js"></script>
+  <script src="./src/game/BgmPlayer.js"></script>
+  <script src="./src/game/PortraitUI.js"></script>
   <script src="./src/game/AiNpcClient.js"></script>
   <script src="./src/main.js"></script>
 </body>

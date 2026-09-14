@@ -1,29 +1,34 @@
-# 终检报告（循环完善后）
+# 终检报告（对照 Gal 改进后）
 
 ## 主路径
 `P04 → D1-01 → D1-02 → D1-03 → D1-03b → FREE_D1 → D1-04 → D1-04b → D1-05 → END_DAY1`  
 `node tools/audit_flow.js` → **ISSUES none**
 
-## 本轮已补齐
-- 侧视 idle + 2 帧 walk（宁念/思思/Boss）
-- 思思红裙侧视 + hug 靠近触发演出
-- 音效 5 个 + 静音按钮 + 开门/拾取/踩踏/入场
-- 独立浴室连通；客厅灯开关；毛巾在浴室
-- 玄关无人物空背景
-- 道具正面 icon
-- Boss 入场 walk + shake + sting
-- 结算卡与对话分离；结算显示信任/线索/背包
-- 餐桌连触发锁；双实例 destroy；热点 nodes 白名单
+## 本轮已落地（对照 GitHub Gal）
+- FREE 闸门：全屋 `allowRooms` + `exploreHint` + 餐桌/床 `storyConfirm`
+- Day1 文案加厚：system / danmaku / 惊悚起伏
+- 对话壳：历史 / 回退 / 自动 / 跳过
+- 惊悚值 HUD + StateStore.horror
+- 客厅打扫后 variant 标记（拖把）
+- 多槽存档 UI（存档 key → `hh_movable_day1_v3`）
+- 轻量拆分：`DialogueShell.js` / `SaveSlots.js` / `unlock_presets.js`
 
-## 仍可继续但已不影响 Day1 完整流程
-- 角色侧视与场景写实仍有插画/实景温差（风格接近但非同一管线）
-- 祖父母未进 Day1 玩法（立绘侧视已备，D2 才登场）
-- AI 真对话需明早灌密钥
-- 无专业配音/作曲（程序占位 wav）
-- hug 为正面伸手姿，非完美侧抱
+## 未做（明确延后）
+- Day2–7 玩法；楼层条
+- main.js 完整拆成 Player/Interact/NodeDirector
 
-## 早上请你亲自点一遍
-1. 新的一天跑完整主线到结算  
-2. 自由阶段按 C 对思思说话（无密钥应有兜底）  
-3. 浴室拿毛巾再选「用毛巾擦脸」看信任是否 +2  
-4. `` ` `` 调试跳 END 再「留下继续逛」
+## 本轮资源搬运（GitHub Gal → 可移动线）
+- `assets/bgm/`：8 首 mp3，按房间自动切（客厅音乐盒 / Boss 紧张 / 夜曲）
+- `assets/portrait/`：24 张对话立绘（已抠透明，`?v=cut8`）；剧情行可用 `"portrait": "boss_angry"`
+- 白底备份：`portrait/_bak_opaque/`；重抠：`python tools/cutout_portraits.py`
+- `bg_living_dirty/clean`：打扫前后；捡血拖把切换 clean
+- `mop_blood` 图标：客厅拖把热点
+
+## 场景侧视 + Gal 对话（本轮）
+- Day1 主房 BG 已换成偏立面/侧视舞台图（旧正面图备份在 `assets/bg/_bak_frontish/`）
+- 对话改为 Gal 站位：左右大立绘在对话框后，说话者高亮、另一侧压暗；走动精灵对话时隐藏
+- 点对话框空白 / 空格 / 继续 均可推进
+
+刷新 `play.html`（BG `?v=side5`，立绘 `?v=cut8`）后验：客厅/厨房应更扁；立绘无白底；Boss 登场左右双人立绘。
+
+完整契约与约束以 **[HANDOFF.md](./HANDOFF.md)** 为准。

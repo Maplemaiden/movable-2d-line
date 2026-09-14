@@ -1,0 +1,737 @@
+{
+  "D7-00": {
+    "id": "D7-00",
+    "title": "拼卡召唤门",
+    "room": "room_living",
+    "night": false,
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss", "liuaiguo", "licuilan"],
+    "npcPose": {
+      "sisi": { "x": 900, "sprite": "sisi_idle" },
+      "boss": { "x": 1180, "sprite": "boss_idle" },
+      "liuaiguo": { "x": 1500, "sprite": "liuaiguo_idle" },
+      "licuilan": { "x": 1780, "sprite": "licuilan_idle" }
+    },
+    "onEnter": { "day": 7, "aliveCount": 3, "floor": 30 },
+    "briefing": [
+      { "speaker": "system", "text": "第七天。十一点前要到一楼。钥匙不是金属。" },
+      { "speaker": "旁白", "text": "卡在桌上拼出轮廓。够不够，下一句旁白会告诉你。" }
+    ],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "旁白",
+        "text": "卡够了。异世之门的影子落在客厅地板上。",
+        "when": { "visitCardsGte": 12 },
+        "horror": -4,
+        "horrorReason": "门被召唤出来，目标变清楚"
+      },
+      {
+        "speaker": "旁白",
+        "text": "卡不够。门只是一道缝。再磨蹭会错过十一点。",
+        "when": { "visitCardsLt": 12 },
+        "horror": 8,
+        "horrorReason": "集卡不足，迷失风险升起"
+      },
+      {
+        "speaker": "boss",
+        "text": "走。一楼。别回头看黑雾。",
+        "portrait": "boss_front"
+      }
+    ],
+    "choices": [
+      {
+        "text": "带家人去一楼",
+        "when": { "visitCardsGte": 12 },
+        "effects": { "floor": 1 },
+        "next": "D7-01"
+      },
+      {
+        "text": "还是去一楼看看",
+        "when": { "visitCardsLt": 12 },
+        "effects": { "flags.blackFogRisk": true, "floor": 1 },
+        "next": "D7-01"
+      }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "D7-01": {
+    "id": "D7-01",
+    "title": "前往一楼",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 820, "sprite": "sisi_idle" },
+      "boss": { "x": 1180, "sprite": "boss_idle" }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "旁白",
+        "text": "一楼有三扇门。中间那扇锁是心形的。",
+        "horror": 4,
+        "horrorReason": "门前的公示让人腿软"
+      },
+      {
+        "speaker": "旁白",
+        "text": "红姐的影子在柱子后闪了一下。",
+        "when": { "flags.hongjieSpared": true },
+        "horror": 6,
+        "horrorReason": "放走的人出现在门前"
+      },
+      {
+        "speaker": "sisi",
+        "text": "妈妈，别变成没有感觉的东西。",
+        "portrait": "sisi_front"
+      }
+    ],
+    "choices": [
+      {
+        "text": "看门",
+        "when": { "flags.hongjieSpared": false },
+        "effects": {},
+        "next": "D7-02"
+      },
+      {
+        "text": "先防她一手",
+        "when": { "flags.hongjieSpared": true },
+        "effects": {
+          "horror": 4,
+          "horrorReason": "门前遇伏，惊悚抬了一下"
+        },
+        "next": "D7-AMBUSH"
+      }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "D7-AMBUSH": {
+    "id": "D7-AMBUSH",
+    "title": "门前伏击 · E9",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 820, "sprite": "sisi_idle" },
+      "boss": { "x": 1180, "sprite": "boss_idle" }
+    },
+    "autoDialogue": true,
+    "sound": "sting_low",
+    "dialogue": [
+      {
+        "speaker": "红姐",
+        "text": "妹妹，门前见。卡交出来，姐姐放你走。"
+      },
+      {
+        "speaker": "俊哥",
+        "text": "放走过我们？该收利息了。"
+      },
+      {
+        "speaker": "旁白",
+        "text": "柱子后的人影围上来。这是放走他们的代价。",
+        "horror": 8,
+        "horrorReason": "E9 门前伏击"
+      },
+      { "speaker": "system", "text": "打赢或吓退可继续开门；交卡/失败会通向坏结局。" }
+    ],
+    "choices": [
+      {
+        "text": "亮刀 / 裙底胡椒",
+        "when": { "inventory.cleaver": true },
+        "effects": {
+          "flags.ambushSurvived": true,
+          "flags.hongjieSpared": false,
+          "horror": -6,
+          "horrorReason": "门前反杀伏击，路通了"
+        },
+        "next": "D7-02"
+      },
+      {
+        "text": "家人气场压场",
+        "when": { "inventory.cleaver": false, "flags.refuseMother": false },
+        "effects": {
+          "flags.ambushSurvived": true,
+          "horror": -2,
+          "horrorReason": "认家气场吓退红姐"
+        },
+        "next": "D7-02"
+      },
+      {
+        "text": "交一半卡换路",
+        "effects": {
+          "visitCards": -8,
+          "flags.ambushSurvived": true,
+          "flags.blackFogRisk": true,
+          "horror": 10,
+          "horrorReason": "门前被勒索，卡少了"
+        },
+        "next": "D7-02"
+      },
+      {
+        "text": "硬刚（无刀）",
+        "when": { "inventory.cleaver": false },
+        "effects": {
+          "horror": 28,
+          "horrorReason": "无刀硬刚伏击，惊悚暴涨——可能致死"
+        },
+        "next": "D7-02"
+      },
+      {
+        "text": "卡被抢光，逃进雾里",
+        "effects": {
+          "visitCards": -99,
+          "flags.blackFogRisk": true,
+          "horror": 16,
+          "horrorReason": "门前劫掠后迷失风险"
+        },
+        "next": "END_AMBUSH"
+      }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "D7-02": {
+    "id": "D7-02",
+    "title": "看门",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 820, "sprite": "sisi_idle" },
+      "boss": { "x": 1180, "sprite": "boss_idle" }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "system",
+        "text": "门上公示你的惊悚。积分将约等于 100−该值。100 已死者不会走到这里。"
+      },
+      {
+        "speaker": "旁白",
+        "text": "锁孔是空的。它在等一颗还在跳的心。"
+      },
+      {
+        "speaker": "旁白",
+        "text": "家人眼里没有红。屠戮太多，心已经黑了。",
+        "when": { "flags.blackHearts": true },
+        "horror": 8,
+        "horrorReason": "看见黑心：门可能打不开"
+      }
+    ],
+    "choices": [
+      {
+        "text": "靠近锁",
+        "when": { "flags.blackHearts": false },
+        "effects": {},
+        "next": "D7-03"
+      },
+      {
+        "text": "还是走近",
+        "when": { "flags.blackHearts": true },
+        "effects": {},
+        "next": "D7-03"
+      }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "D7-03": {
+    "id": "D7-03",
+    "title": "是否喂食钥匙",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss", "liuaiguo", "licuilan"],
+    "npcPose": {
+      "sisi": { "x": 760, "sprite": "sisi_idle" },
+      "boss": { "x": 1080, "sprite": "boss_idle" },
+      "liuaiguo": { "x": 1400, "sprite": "liuaiguo_idle" },
+      "licuilan": { "x": 1680, "sprite": "licuilan_idle" }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      { "speaker": "system", "text": "是否把钥匙喂给门？" },
+      {
+        "speaker": "旁白",
+        "text": "你还没有钥匙。你也可以装作没有。"
+      }
+    ],
+    "choices": [
+      {
+        "text": "我没有钥匙，好想留下",
+        "effects": {
+          "flags.stayedBehindAttempt": true,
+          "horror": -2,
+          "horrorReason": "装傻想留下，家人会把真相说完"
+        },
+        "next": "D7-04"
+      },
+      {
+        "text": "……我知道是什么。打开吧。",
+        "effects": {
+          "flags.acceptedHeartKey": true,
+          "horror": 4,
+          "horrorReason": "承认要开门，心已经在痛"
+        },
+        "next": "D7-04"
+      },
+      {
+        "text": "你们别献心！我不要！",
+        "effects": {
+          "flags.refusedHeartKey": true,
+          "flags.blackFogRisk": true,
+          "horror": 10,
+          "horrorReason": "拒献心，黑雾逼近"
+        },
+        "next": "D7-04"
+      }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "D7-04": {
+    "id": "D7-04",
+    "title": "真相：心 / 黑雾",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 820, "sprite": "sisi_idle" },
+      "boss": { "x": 1180, "sprite": "boss_idle" }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "boss",
+        "text": "钥匙是幸福之心。我们的心。留下的人不会变诡异——会变成没有感觉的黑雾。",
+        "portrait": "boss_front"
+      },
+      {
+        "speaker": "sisi",
+        "text": "思思不要妈妈变成雾。雾找不到家。",
+        "portrait": "sisi_front",
+        "side": "right"
+      },
+      {
+        "speaker": "旁白",
+        "text": "他已经把心掏到一半。红的。",
+        "horror": 8,
+        "horrorReason": "看见献心，情绪先于规则震动"
+      }
+    ],
+    "choices": [
+      {
+        "text": "接住",
+        "when": { "flags.refusedHeartKey": false },
+        "effects": {
+          "flags.acceptedHeartKey": true,
+          "horror": -4,
+          "horrorReason": "接住他的心，不让它掉在地上"
+        },
+        "next": "D7-05"
+      },
+      {
+        "text": "闭眼，但不当拦",
+        "when": { "flags.refusedHeartKey": false },
+        "effects": {
+          "flags.acceptedHeartKey": true,
+          "horror": 2,
+          "horrorReason": "不敢看，锁仍会开"
+        },
+        "next": "D7-05"
+      },
+      {
+        "text": "还是不要！停下！",
+        "when": { "flags.refusedHeartKey": true },
+        "effects": {
+          "flags.refusedHeartKey": true,
+          "flags.blackFogRisk": true,
+          "horror": 12,
+          "horrorReason": "坚持拒心，门前的雾更浓"
+        },
+        "next": "D7-05"
+      },
+      {
+        "text": "……打开吧。对不起",
+        "when": { "flags.refusedHeartKey": true },
+        "effects": {
+          "flags.refusedHeartKey": false,
+          "flags.acceptedHeartKey": true,
+          "flags.blackFogRisk": false,
+          "horror": -10,
+          "horrorReason": "门前改口接受献心"
+        },
+        "next": "D7-05"
+      }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "D7-05": {
+    "id": "D7-05",
+    "title": "献心序列",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss", "liuaiguo", "licuilan"],
+    "npcPose": {
+      "sisi": { "x": 760, "sprite": "sisi_idle" },
+      "boss": { "x": 1080, "sprite": "boss_idle" },
+      "liuaiguo": { "x": 1400, "sprite": "liuaiguo_idle" },
+      "licuilan": { "x": 1680, "sprite": "licuilan_idle" }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "旁白",
+        "text": "Boss 先献。然后是思思、爷爷、奶奶。锁一颗一颗亮起来。",
+        "when": { "flags.acceptedHeartKey": true, "flags.blackHearts": false }
+      },
+      {
+        "speaker": "旁白",
+        "text": "心是黑的。锁吃不进去。门像死的。",
+        "when": { "flags.blackHearts": true },
+        "horror": 10,
+        "horrorReason": "黑心无法开锁"
+      },
+      {
+        "speaker": "旁白",
+        "text": "你按住他们的手。锁数不够。雾已经到脚踝。",
+        "when": { "flags.refusedHeartKey": true, "flags.acceptedHeartKey": false },
+        "horror": 14,
+        "horrorReason": "阻止献心，锁暗下去"
+      }
+    ],
+    "choices": [
+      {
+        "text": "开门",
+        "when": { "flags.acceptedHeartKey": true, "flags.blackHearts": false },
+        "effects": {},
+        "next": "D7-06"
+      },
+      {
+        "text": "门打不开……",
+        "when": { "flags.blackHearts": true },
+        "effects": { "flags.blackFogRisk": true },
+        "next": "END_NOKEY"
+      },
+      {
+        "text": "站到雾里",
+        "when": { "flags.refusedHeartKey": true, "flags.acceptedHeartKey": false },
+        "effects": {},
+        "next": "END_FOG"
+      }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "D7-06": {
+    "id": "D7-06",
+    "title": "离开",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 900, "sprite": "sisi_idle" },
+      "boss": { "x": 1280, "sprite": "boss_idle" }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "sisi",
+        "text": "妈妈走。思思会在门的这一边想你。",
+        "portrait": "sisi_front"
+      },
+      {
+        "speaker": "boss",
+        "text": "活着。比留下更难。",
+        "portrait": "boss_front"
+      },
+      {
+        "speaker": "旁白",
+        "text": "你曾经想留下来。他们还是把你推了出去。",
+        "when": { "flags.stayedBehindAttempt": true }
+      }
+    ],
+    "choices": [
+      {
+        "text": "出门",
+        "when": {
+          "flags.stayedBehindAttempt": false,
+          "flags.hunterTrack": false,
+          "flags.sharedCards": false
+        },
+        "effects": {},
+        "next": "END_CLEAR"
+      },
+      {
+        "text": "出门（想留过）",
+        "when": { "flags.stayedBehindAttempt": true },
+        "effects": {},
+        "next": "END_STAY"
+      },
+      {
+        "text": "出门（猎手）",
+        "when": { "flags.hunterTrack": true, "flags.stayedBehindAttempt": false },
+        "effects": {},
+        "next": "END_HUNTER"
+      },
+      {
+        "text": "出门（先看同伴）",
+        "when": {
+          "flags.sharedCards": true,
+          "flags.hunterTrack": false,
+          "flags.stayedBehindAttempt": false
+        },
+        "effects": {},
+        "next": "END_FRIENDS"
+      },
+      {
+        "text": "回头再抱一次",
+        "effects": {
+          "familyTrust.sisi": 1,
+          "familyTrust.boss": 1,
+          "horror": -4,
+          "horrorReason": "最后一次拥抱"
+        },
+        "next": "END_CLEAR"
+      }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "END_CLEAR": {
+    "id": "END_CLEAR",
+    "title": "通关",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 900, "sprite": "sisi_idle" },
+      "boss": { "x": 1280, "sprite": "boss_idle" }
+    },
+    "ending": true,
+    "endTitle": "通关 · 走出幸福之家",
+    "endDesc": "门开了。积分 ≈ 100−惊悚。惊悚很低就是圆满；偏高则是低分逃出。",
+    "endNext": null,
+    "endKind": "clear",
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "system",
+        "text": "结局 E1 · 首通圆满。你把他们当家人，也把心带出了门。",
+        "when": { "horrorLt": 30, "flags.acceptedHeartKey": true }
+      },
+      {
+        "speaker": "system",
+        "text": "结局 E2 · 低分逃出。你活着离开，惊悚仍写在积分上。",
+        "when": { "horrorGte": 30, "flags.acceptedHeartKey": true }
+      },
+      {
+        "speaker": "旁白",
+        "text": "外面的风不血腥。近视眼仍看不清远处——这就够了。"
+      }
+    ],
+    "choices": [
+      { "text": "查看通关结算", "effects": {}, "next": null, "showEnd": true }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "END_STAY": {
+    "id": "END_STAY",
+    "title": "想留不成 · E5",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 900, "sprite": "sisi_idle" },
+      "boss": { "x": 1280, "sprite": "boss_idle" }
+    },
+    "ending": true,
+    "endTitle": "结局 E5 · 想留不成",
+    "endDesc": "你想留下。家人仍把心喂给门，把你推出去。积分别按惊悚算。",
+    "endNext": null,
+    "endKind": "clear",
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "system",
+        "text": "结局 E5。装傻想留下也不行——他们强制献心，仍送你走。"
+      },
+      {
+        "speaker": "boss",
+        "text": "活着。比陪我们更难。走。",
+        "portrait": "boss_front"
+      },
+      {
+        "speaker": "sisi",
+        "text": "妈妈不许变雾。快走。",
+        "portrait": "sisi_front",
+        "side": "right"
+      }
+    ],
+    "choices": [
+      { "text": "被推进门外", "effects": {}, "next": null, "showEnd": true }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "END_FRIENDS": {
+    "id": "END_FRIENDS",
+    "title": "同伴不同命 · E7",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 900, "sprite": "sisi_idle" },
+      "boss": { "x": 1280, "sprite": "boss_idle" }
+    },
+    "ending": true,
+    "endTitle": "结局 E7 · 同伴不同命",
+    "endDesc": "你分过卡。苏小茉 / 方远的门可能打不开（黑心）。你仍可离开。",
+    "endNext": "END_CLEAR",
+    "endKind": "clear",
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "system",
+        "text": "结局 E7 旁观线：分卡助人，他们的钥匙未必是红心。"
+      },
+      {
+        "speaker": "苏小茉",
+        "text": "……我的锁不亮。宁念，你先走。"
+      },
+      {
+        "speaker": "方远",
+        "text": "别回头。我们自己想办法。"
+      },
+      {
+        "speaker": "旁白",
+        "text": "你的门仍红着。同伴的门发灰。不同命。",
+        "horror": 4,
+        "horrorReason": "看见同伴打不开门"
+      }
+    ],
+    "choices": [
+      {
+        "text": "继续出门",
+        "effects": { "flags.friendsBlackHeart": true },
+        "next": "END_CLEAR"
+      }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "END_HUNTER": {
+    "id": "END_HUNTER",
+    "title": "猎手通关 · E8",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 900, "sprite": "sisi_idle" },
+      "boss": { "x": 1280, "sprite": "boss_idle" }
+    },
+    "ending": true,
+    "endTitle": "结局 E8 · 猎手通关",
+    "endDesc": "门开了。家人厌恶的目光留在门这边。无首通精神奖励。",
+    "endNext": null,
+    "endKind": "clear",
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "system",
+        "text": "结局 E8。杀夺卡集齐也能走——但幸福之心的温度已经冷了。"
+      },
+      {
+        "speaker": "sisi",
+        "text": "……妈妈身上有别人的味道。思思不喜欢。",
+        "portrait": "sisi_angry"
+      },
+      {
+        "speaker": "boss",
+        "text": "活着就好。别再回来。",
+        "portrait": "boss_angry"
+      }
+    ],
+    "choices": [
+      { "text": "查看猎手结算", "effects": {}, "next": null, "showEnd": true }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "END_AMBUSH": {
+    "id": "END_AMBUSH",
+    "title": "乱门劫掠 · E9",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": [],
+    "ending": true,
+    "endTitle": "结局 E9 · 放走红姐后的乱门",
+    "endDesc": "卡被抢光，门前失守。轨迹并入迷失或猝死。",
+    "endNext": "END_FOG",
+    "endKind": "fog",
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "旁白",
+        "text": "红姐笑着挥手。卡空了。十一点的雾从脚面涨上来。"
+      },
+      { "speaker": "system", "text": "结局 E9。放走过的人回来收租——失败通向黑雾。" }
+    ],
+    "choices": [
+      { "text": "坠入黑雾", "effects": { "flags.blackFogRisk": true }, "next": "END_FOG" }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "END_FOG": {
+    "id": "END_FOG",
+    "title": "黑雾迷失",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 900, "sprite": "sisi_idle" },
+      "boss": { "x": 1280, "sprite": "boss_idle" }
+    },
+    "ending": true,
+    "endTitle": "结局 E4 · 黑雾迷失",
+    "endDesc": "你没有离开。感觉先消失，然后是名字。积分为 0。",
+    "endNext": null,
+    "endKind": "fog",
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "旁白",
+        "text": "十一点过后，门不再等人。你变成没有痛、也没有家的黑雾。"
+      },
+      {
+        "speaker": "sisi",
+        "text": "妈妈？思思看不见你了。",
+        "portrait": "sisi_front"
+      },
+      { "speaker": "system", "text": "结局 E4。迷失 ≠ 变诡异。只是再也感觉不到。" }
+    ],
+    "choices": [
+      { "text": "查看结局", "effects": {}, "next": null, "showEnd": true }
+    ],
+    "aiStage": "D7_FAREWELL"
+  },
+  "END_NOKEY": {
+    "id": "END_NOKEY",
+    "title": "有门无钥",
+    "room": "room_gates",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 900, "sprite": "sisi_idle" },
+      "boss": { "x": 1280, "sprite": "boss_idle" }
+    },
+    "ending": true,
+    "endTitle": "结局 E6 · 有门无钥",
+    "endDesc": "锁不吃黑心。等到午夜，轨迹并入迷失。",
+    "endNext": "END_FOG",
+    "endKind": "fog",
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "旁白",
+        "text": "门在。钥匙不在。屠戮把红心烧成了炭。"
+      },
+      { "speaker": "system", "text": "卡在门前直到午夜。接下来是黑雾。" }
+    ],
+    "choices": [
+      { "text": "等到午夜", "effects": { "flags.blackFogRisk": true }, "next": "END_FOG" }
+    ],
+    "aiStage": "D7_FAREWELL"
+  }
+}

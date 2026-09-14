@@ -8,10 +8,14 @@ window.HH_CONFIG = {
     enabled: true, // 无密钥时自动走兜底句
     timeoutMs: 8000,
   },
-  saveKey: 'hh_movable_day1_v2',
+  saveKey: 'hh_movable_day1_v3',
   designWidth: 1920,
   designHeight: 1080,
   groundY: 980,
   interactRange: 160,
   playerSpeed: 320,
+  /** 静态资源缓存版本：换图后只改这一处，避免每文件不同 ?v= */
+  assetVer: '20260914f',
+  /** 开发版开挂：P 键跳场景。上线可改 false */
+  devCheat: true,
 };

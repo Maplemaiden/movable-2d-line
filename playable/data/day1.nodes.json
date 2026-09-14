@@ -6,37 +6,27 @@
     "lockDoors": false,
     "showNpcs": [],
     "intro": [
+      { "speaker": "system", "text": "欢迎进入「幸福之家」副本。存活七天即为通关。" },
+      { "speaker": "system", "text": "惊悚值＝害怕程度。到 100 直接死亡；通关积分 ≈ 100−惊悚。认家人会降惊悚；若故意疏远，之后仍有挽回机会——一意孤行则惊悚升、信任降。" },
+      { "speaker": "system", "text": "点右上角「惊悚值」可看变动原因；Esc 打开设置。" },
+      { "speaker": "danmaku", "text": "明神都坚持到第六天嘎了……这次又是团灭局。" },
+      { "speaker": "danmaku", "text": "楼层越高 Boss 越强！30 层号称死亡之家。" },
+      { "speaker": "旁白", "text": "这是横版侧视：角色在画面里左右走动。顶部黄字是目标，箭头会指出下一步。" },
+      { "speaker": "旁白", "text": "操作：A/D 或 ←→ 移动；走到发光提示处按 E；靠近家人按 C 可自由对话。" },
       {
-        "speaker": "system",
-        "text": "已抵达 30 层「幸福之家」。这是横版侧视：人物左右走动。"
-      },
-      {
-        "speaker": "system",
-        "text": "操作：A / D（或← →）左右移动；走到发光点按 E 互动；靠近人可按 C 对话。"
+        "speaker": "旁白",
+        "text": "抵达 30 层。血腥味重了点，墙壁红了点……可这是大平层啊，还有梦寐以求的家人！",
+        "horror": 3,
+        "horrorReason": "血腥味与暗红墙壁带来一丝不适（她很快被「大平层」冲淡）"
       }
     ],
     "choices": [
-      {
-        "text": "明白了，我开始走",
-        "effects": {},
-        "next": null,
-        "unlockMove": true
-      }
+      { "text": "明白了，开始第一天", "effects": {}, "next": null, "unlockMove": true }
     ],
-    "onEnter": {
-      "day": 1,
-      "aliveCount": 30,
-      "floor": 30
-    },
-    "advanceHint": "👉 向右走到门（发光提示）按 E 进入客厅",
-    "guide": {
-      "type": "door",
-      "doorId": "to_living",
-      "text": "向右走到门，按 E"
-    },
-    "nextOnDoor": {
-      "to_living": "D1-01"
-    },
+    "onEnter": { "day": 1, "aliveCount": 30, "floor": 30, "horror": 0, "horrorReason": "进入副本：惊悚值从 0 起算" },
+    "advanceHint": "目标：向右走到门，按 E 查看，再按 E 进入",
+    "guide": { "type": "hotspot", "hotspotId": "front_door_observe", "text": "门 · 按 E" },
+    "nextOnDoor": { "to_living": "D1-01" },
     "aiStage": "D1_MEET"
   },
   "D1-01": {
@@ -44,57 +34,74 @@
     "title": "思思首次出现",
     "room": "room_living",
     "lockDoors": true,
-    "showNpcs": [
-      "sisi"
-    ],
-    "npcPose": {
-      "sisi": {
-        "x": 1180,
-        "sprite": "sisi_red_idle"
-      }
-    },
+    "showNpcs": ["sisi"],
+    "npcPose": { "sisi": { "x": 1180, "sprite": "sisi_red_idle" } },
     "spawnPlayerX": 360,
-    "approachTrigger": {
-      "npc": "sisi",
-      "range": 180
-    },
-    "advanceHint": "👉 向右走近红裙女孩，靠近后自动触发",
-    "guide": {
-      "type": "npc",
-      "npcId": "sisi",
-      "text": "走近她"
-    },
+    "briefing": [
+      { "speaker": "旁白", "text": "客厅里有人。靠近她会触发剧情，不必按键开场。" },
+      { "speaker": "system", "text": "对话出现时不能移动。选项会汇入主线，选哪句都不会卡死。认家人可降惊悚；若疏远，后面仍有挽回机会。" },
+      { "speaker": "danmaku", "text": "红裙子……那是血吗？快跑啊！" }
+    ],
+    "briefingChoice": { "text": "去见她", "unlockMove": true },
+    "approachTrigger": { "npc": "sisi", "range": 180 },
+    "advanceHint": "目标：向右走近红裙女孩",
+    "guide": { "type": "npc", "npcId": "sisi", "text": "走近她" },
     "autoDialogue": false,
     "onApproach": {
       "anim": "hug",
       "sound": "sting_low",
       "dialogue": [
+        { "speaker": "sisi", "text": "……你回来了。", "portrait": "sisi_blood_front", "side": "left" },
         {
-          "speaker": "sisi",
-          "text": "……你回来了。"
+          "speaker": "旁白",
+          "text": "她扑上来。冰凉的小手像要掐住什么——又像是在抱。",
+          "horror": 14,
+          "horrorReason": "血衣女孩突然扑上来（旁人视角像掐脖，身体仍会一紧）",
+          "portrait": "sisi_hug",
+          "side": "left"
         },
-        {
-          "speaker": "system",
-          "text": "她扑上来。冰凉的小手像要掐住什么——又像是在抱。"
-        }
+        { "speaker": "danmaku", "text": "这女的在掐脖子啊喂！" }
       ],
       "choices": [
         {
           "text": "别怕，我带你换衣服",
           "effects": {
-            "familyTrust.sisi": 1
+            "flags.refuseMother": false,
+            "flags.pushAway": false,
+            "familyTrust.sisi": 1,
+            "horror": -10,
+            "horrorReason": "把扑抱当成孩子害怕，动手照顾"
           },
-          "next": "D1-02"
-        },
-        {
-          "text": "你是谁？这是哪里？",
-          "effects": {},
           "next": "D1-02"
         },
         {
           "text": "好，妈妈在这儿",
           "effects": {
-            "familyTrust.sisi": 1
+            "flags.refuseMother": false,
+            "flags.pushAway": false,
+            "familyTrust.sisi": 1,
+            "horror": -16,
+            "horrorReason": "立刻认下母女关系——按原书逻辑，角色扮演会大幅压惊悚"
+          },
+          "next": "D1-02"
+        },
+        {
+          "text": "你是谁？这是哪里？",
+          "effects": {
+            "flags.refuseMother": true,
+            "horror": 8,
+            "horrorReason": "把对方当危险未知物追问，恐惧上升"
+          },
+          "next": "D1-02"
+        },
+        {
+          "text": "推开她",
+          "effects": {
+            "flags.refuseMother": true,
+            "flags.pushAway": true,
+            "familyTrust.sisi": -1,
+            "horror": 16,
+            "horrorReason": "推开扑上来的女孩——敌意拉高惊悚，信任骤降"
           },
           "next": "D1-02"
         }
@@ -107,57 +114,133 @@
     "title": "母女关系异常",
     "room": "room_living",
     "lockDoors": false,
-    "allowRooms": [
-      "room_living",
-      "room_bathroom"
+    "allowRooms": ["room_living", "room_bathroom"],
+    "unlockPreset": "home",
+    "showNpcs": ["sisi"],
+    "npcPose": { "sisi": { "x": 1100, "sprite": "sisi_red_idle" } },
+    "briefing": [
+      { "speaker": "旁白", "text": "信任值会随你的选择上升。可去浴室拿毛巾，或先看红裙线索。", "when": { "flags.refuseMother": false } },
+      { "speaker": "旁白", "text": "她还站在那儿。刚才那一下，空气冷了——你仍可道歉挽回，或继续冷下去。", "when": { "flags.refuseMother": true } },
+      { "speaker": "system", "text": "本段仅开放客厅与浴室。做完选择后主线继续。" }
     ],
-    "showNpcs": [
-      "sisi"
-    ],
-    "npcPose": {
-      "sisi": {
-        "x": 1100,
-        "sprite": "sisi_red_idle"
-      }
-    },
-    "advanceHint": "看完对话后选一项继续；也可之后自由走动",
-    "guide": {
-      "type": "hotspot",
-      "hotspotId": "red_dress",
-      "text": "红裙"
-    },
+    "advanceHint": "听完对话后选择一项推进（可先去浴室拿毛巾）",
+    "guide": { "type": "hotspot", "hotspotId": "red_dress", "text": "红裙" },
     "autoDialogue": true,
     "dialogue": [
       {
         "speaker": "sisi",
-        "text": "裙子……湿了。妈妈，不要走。"
+        "text": "裙子……湿了。妈妈，不要走。",
+        "portrait": "sisi_blood_front",
+        "when": { "flags.refuseMother": false }
       },
       {
-        "speaker": "system",
-        "text": "可查看红裙。若想拿毛巾，选完后也可去浴室（本段先选一项推进剧情）。"
-      }
+        "speaker": "旁白",
+        "text": "不是水。是血。但她在发抖。",
+        "horror": 6,
+        "horrorReason": "确认裙上是血，恶心感上升",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "sisi",
+        "text": "……你不认我。",
+        "portrait": "sisi_blood_front",
+        "when": { "flags.refuseMother": true, "flags.pushAway": false }
+      },
+      {
+        "speaker": "sisi",
+        "text": "……好痛。妈妈……为什么推开思思。",
+        "portrait": "sisi_blood_front",
+        "when": { "flags.pushAway": true }
+      },
+      {
+        "speaker": "旁白",
+        "text": "血衣还贴在身上。她的眼神不像在演戏——更像被丢下的孩子。",
+        "horror": 8,
+        "horrorReason": "拒认后仍被血衣与委屈眼神缠住，不适加重",
+        "when": { "flags.refuseMother": true }
+      },
+      { "speaker": "system", "text": "选一项回应她。选项不同，信任/线索会变，但都会进入下一幕。" }
     ],
     "choices": [
       {
         "text": "用毛巾给她擦脸",
+        "when": { "flags.refuseMother": false },
         "effects": {
           "familyTrust.sisi": 1,
-          "clues.wetDress": true
+          "clues.wetDress": true,
+          "horror": -10,
+          "horrorReason": "先照顾孩子，不追问血腥来源"
         },
-        "requireInv": null,
         "next": "D1-03"
       },
       {
         "text": "这血是怎么回事？",
+        "when": { "flags.refuseMother": false },
         "effects": {
-          "clues.wetDress": true
+          "flags.refuseMother": true,
+          "clues.wetDress": true,
+          "horror": 10,
+          "horrorReason": "追问血迹真相，把「血」当恐怖事件——疏远感升起"
         },
         "next": "D1-03"
       },
       {
         "text": "先换干净衣服，乖",
+        "when": { "flags.refuseMother": false },
         "effects": {
-          "familyTrust.sisi": 1
+          "familyTrust.sisi": 1,
+          "horror": -8,
+          "horrorReason": "用日常母爱流程消化诡异场面"
+        },
+        "next": "D1-03"
+      },
+      {
+        "text": "对不起……妈妈刚才吓到了",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.refuseMother": false,
+          "flags.pushAway": false,
+          "familyTrust.sisi": 1,
+          "clues.wetDress": true,
+          "horror": -14,
+          "horrorReason": "道歉并重新认妈——疏远被拉回"
+        },
+        "next": "D1-03"
+      },
+      {
+        "text": "先擦干净再说（递毛巾）",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.refuseMother": false,
+          "flags.pushAway": false,
+          "familyTrust.sisi": 1,
+          "clues.wetDress": true,
+          "horror": -10,
+          "horrorReason": "用照顾行动修补刚才的冷淡"
+        },
+        "next": "D1-03"
+      },
+      {
+        "text": "别叫妈妈。你到底是什么？",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.refuseMother": true,
+          "familyTrust.sisi": -1,
+          "clues.wetDress": true,
+          "horror": 12,
+          "horrorReason": "继续否认母女关系，一意孤行加重惊悚"
+        },
+        "next": "D1-03"
+      },
+      {
+        "text": "离我远点，别碰我",
+        "when": { "flags.pushAway": true },
+        "effects": {
+          "flags.refuseMother": true,
+          "flags.pushAway": true,
+          "familyTrust.sisi": -1,
+          "horror": 14,
+          "horrorReason": "推开后再驱赶——敌意固化，惊悚飙升"
         },
         "next": "D1-03"
       }
@@ -169,58 +252,146 @@
     "title": "断头Boss登场",
     "room": "room_living",
     "lockDoors": true,
-    "showNpcs": [
-      "sisi",
-      "boss"
-    ],
+    "showNpcs": ["sisi", "boss"],
     "npcPose": {
-      "sisi": {
-        "x": 1100,
-        "sprite": "sisi_idle"
-      },
-      "boss": {
-        "x": 2480,
-        "sprite": "boss_idle",
-        "walkTo": 1500,
-        "walkAnim": true
-      }
+      "sisi": { "x": 1100, "sprite": "sisi_idle" },
+      "boss": { "x": 2480, "sprite": "boss_idle", "walkTo": 1500, "walkAnim": true }
     },
+    "briefing": [
+      { "speaker": "旁白", "text": "新的「家人」登场了。先听完对话，再选回应——示好或护孩子都会增加信任。", "when": { "flags.refuseMother": false } },
+      { "speaker": "旁白", "text": "有人从门口走进来。气氛比刚才更僵——你仍可当场认家人，或继续硬刚。", "when": { "flags.refuseMother": true } },
+      { "speaker": "danmaku", "text": "断头？？30 层 Boss 本体来了快跑！" }
+    ],
     "autoDialogue": true,
     "sound": "sting_low",
     "dialogue": [
       {
         "speaker": "boss",
-        "text": "呵，有趣。居然能在思思手里活到现在。"
+        "text": "呵，有趣。居然能在思思手里活到现在。",
+        "portrait": "boss_front",
+        "side": "left",
+        "slots": [
+          { "side": "left", "portrait": "boss_front", "name": "？？？" },
+          { "side": "right", "portrait": "sisi_front", "name": "思思" }
+        ],
+        "focusSide": "left",
+        "when": { "flags.refuseMother": false }
       },
       {
         "speaker": "boss",
-        "text": "别碰她。"
+        "text": "别碰她。",
+        "portrait": "boss_angry",
+        "side": "left",
+        "slots": [
+          { "side": "left", "portrait": "boss_angry", "name": "？？？" },
+          { "side": "right", "portrait": "sisi_front", "name": "思思" }
+        ],
+        "focusSide": "left",
+        "when": { "flags.refuseMother": false }
       },
       {
         "speaker": "sisi",
-        "text": "你最好别动她。这个妈妈有点意思。"
+        "text": "你最好别动她。这个妈妈有点意思。",
+        "portrait": "sisi_front",
+        "side": "right",
+        "slots": [
+          { "side": "left", "portrait": "boss_angry", "name": "？？？" },
+          { "side": "right", "portrait": "sisi_front", "name": "思思" }
+        ],
+        "focusSide": "right",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "boss",
+        "text": "……她不肯认你？",
+        "portrait": "boss_front",
+        "side": "left",
+        "slots": [
+          { "side": "left", "portrait": "boss_front", "name": "？？？" },
+          { "side": "right", "portrait": "sisi_front", "name": "思思" }
+        ],
+        "focusSide": "left",
+        "when": { "flags.refuseMother": true }
+      },
+      {
+        "speaker": "boss",
+        "text": "呵。敢让思思受委屈——胆子不小。",
+        "portrait": "boss_angry",
+        "side": "left",
+        "slots": [
+          { "side": "left", "portrait": "boss_angry", "name": "？？？" },
+          { "side": "right", "portrait": "sisi_front", "name": "思思" }
+        ],
+        "focusSide": "left",
+        "when": { "flags.refuseMother": true }
+      },
+      {
+        "speaker": "sisi",
+        "text": "……她还没走。我想再等等。",
+        "portrait": "sisi_front",
+        "side": "right",
+        "slots": [
+          { "side": "left", "portrait": "boss_angry", "name": "？？？" },
+          { "side": "right", "portrait": "sisi_front", "name": "思思" }
+        ],
+        "focusSide": "right",
+        "when": { "flags.refuseMother": true }
+      },
+      {
+        "speaker": "旁白",
+        "text": "他很高。高到……头的位置好像不太对。",
+        "horror": 22,
+        "horrorReason": "断头身影入场：本能恐惧飙升（普通玩家会接近致死，宁念仍可能压回去）",
+        "portrait": "boss_head",
+        "side": "left",
+        "clearSprites": false
       }
     ],
     "choices": [
       {
         "text": "我不是来打架的，我是家人",
         "effects": {
-          "familyTrust.boss": 1
+          "flags.refuseMother": false,
+          "flags.pushAway": false,
+          "flags.fearBoss": false,
+          "familyTrust.boss": 1,
+          "familyTrust.sisi": 1,
+          "horror": -24,
+          "horrorReason": "当场认下家庭角色——疏远与恐惧一并回落"
         },
         "next": "D1-03b"
       },
       {
         "text": "……你好。你个子好像有点……",
+        "when": { "flags.refuseMother": false },
         "effects": {
-          "familyTrust.boss": 1
+          "familyTrust.boss": 1,
+          "horror": 4,
+          "horrorReason": "注意到「身高不对」却没完成角色扮演，不适残留"
         },
         "next": "D1-03b"
       },
       {
         "text": "不许这样凶孩子",
+        "when": { "flags.refuseMother": false },
         "effects": {
           "familyTrust.sisi": 1,
-          "familyTrust.boss": 1
+          "familyTrust.boss": 1,
+          "horror": -14,
+          "horrorReason": "护短当妈，注意力从恐惧转到家庭冲突"
+        },
+        "next": "D1-03b"
+      },
+      {
+        "text": "离我远点。你们都别过来",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.refuseMother": true,
+          "flags.fearBoss": true,
+          "familyTrust.boss": -1,
+          "familyTrust.sisi": -1,
+          "horror": 16,
+          "horrorReason": "对 Boss 与思思同时驱赶——敌意与恐惧叠加"
         },
         "next": "D1-03b"
       }
@@ -232,42 +403,86 @@
     "title": "家庭关系初定",
     "room": "room_living",
     "lockDoors": false,
-    "showNpcs": [
-      "sisi",
-      "boss"
-    ],
+    "showNpcs": ["sisi", "boss"],
     "npcPose": {
-      "sisi": {
-        "x": 1100,
-        "sprite": "sisi_idle"
-      },
-      "boss": {
-        "x": 1500,
-        "sprite": "boss_idle"
-      }
+      "sisi": { "x": 1100, "sprite": "sisi_idle" },
+      "boss": { "x": 1500, "sprite": "boss_idle" }
     },
     "autoDialogue": true,
     "dialogue": [
       {
         "speaker": "boss",
-        "text": "我可是实实在在的一米八六。你再仔细看看呢？"
+        "text": "我可是实实在在的一米八六。你再仔细看看呢？",
+        "portrait": "boss_chest",
+        "when": { "flags.refuseMother": false }
       },
       {
-        "speaker": "system",
-        "text": "门已解锁。可与家人交谈（C），或去厨房准备晚餐。"
-      }
+        "speaker": "旁白",
+        "text": "最萌身高差……大概吧。反正我看不太清。",
+        "horror": -6,
+        "horrorReason": "近视滤镜把断头读成「身高差」，惊悚下降",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "boss",
+        "text": "……随你。门开着，别把思思再弄哭。",
+        "portrait": "boss_chest",
+        "when": { "flags.refuseMother": true, "flags.fearBoss": false }
+      },
+      {
+        "speaker": "boss",
+        "text": "害怕就对了。可这屋里，你暂时还走不掉。",
+        "portrait": "boss_angry",
+        "when": { "flags.fearBoss": true }
+      },
+      {
+        "speaker": "旁白",
+        "text": "空气像结了薄冰。你仍可以软下来——或继续硬撑。",
+        "horror": 4,
+        "horrorReason": "拒家后的僵持让不适残留",
+        "when": { "flags.refuseMother": true }
+      },
+      { "speaker": "system", "text": "门已解锁。接下来进入自由阶段：可走动、捡东西，或按 C 跟家人闲聊。" }
     ],
     "choices": [
       {
         "text": "最萌身高差，天生一对",
+        "when": { "flags.refuseMother": false },
         "effects": {
-          "familyTrust.boss": 1
+          "familyTrust.boss": 1,
+          "horror": -4,
+          "horrorReason": "用恋爱脑/家庭滤镜盖过诡异"
         },
         "next": "FREE_D1"
       },
       {
         "text": "我去厨房看看",
+        "when": { "flags.refuseMother": false },
         "effects": {},
+        "next": "FREE_D1"
+      },
+      {
+        "text": "……好吧。我试试看当家人",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.refuseMother": false,
+          "flags.pushAway": false,
+          "flags.fearBoss": false,
+          "familyTrust.sisi": 1,
+          "familyTrust.boss": 1,
+          "horror": -18,
+          "horrorReason": "主动选择角色扮演——拒家轨迹被拉回"
+        },
+        "next": "FREE_D1"
+      },
+      {
+        "text": "随便。我只是暂时待着",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.refuseMother": true,
+          "horror": 6,
+          "horrorReason": "拒绝软化，疏远状态延续"
+        },
         "next": "FREE_D1"
       }
     ],
@@ -278,80 +493,142 @@
     "title": "自由活动",
     "room": "room_living",
     "lockDoors": false,
-    "showNpcs": [
-      "sisi",
-      "boss"
+    "allowRooms": [
+      "room_xuanguan",
+      "room_living",
+      "room_kitchen",
+      "room_bedroom",
+      "room_bathroom"
     ],
+    "unlockPreset": "free_d1",
+    "exploreHint": "自由探索中。可拾取拖把、开灯、与 NPC 对话。准备好后去厨房餐桌继续主线。",
+    "showNpcs": ["sisi", "boss"],
     "npcPose": {
-      "sisi": {
-        "x": 1100,
-        "sprite": "sisi_idle"
+      "sisi": { "x": 1100, "sprite": "sisi_idle" },
+      "boss": { "x": 1500, "sprite": "boss_idle" }
+    },
+    "briefing": [
+      {
+        "speaker": "旁白",
+        "text": "自由阶段闸门已打开：全屋可进。做完想做的事后，去厨房餐桌推进主线。",
+        "when": { "flags.refuseMother": false }
       },
-      "boss": {
-        "x": 1500,
-        "sprite": "boss_idle"
+      {
+        "speaker": "旁白",
+        "text": "门开了，可你和他们之间仍隔着一层霜。想缓和，晚餐是个机会；想继续冷，他们也会记得。",
+        "when": { "flags.refuseMother": true }
+      },
+      {
+        "speaker": "system",
+        "text": "靠近餐桌会询问是否继续——避免误触。拖过地后客厅会记为「打扫后」。"
+      },
+      {
+        "speaker": "danmaku",
+        "text": "这人还在硬刚诡异家属……积分要飞了吧。",
+        "when": { "flags.refuseMother": true }
       }
-    },
-    "advanceHint": "👉 向右进入厨房，走到餐桌触发晚餐",
-    "guide": {
-      "type": "door",
-      "doorId": "to_kitchen",
-      "text": "去厨房"
-    },
+    ],
+    "briefingChoice": { "text": "开始自由活动", "unlockMove": true },
+    "advanceHint": "目标：进入厨房 → 走到餐桌（会确认后进入晚餐）",
+    "guide": { "type": "door", "doorId": "to_kitchen", "text": "去厨房" },
     "autoDialogue": false,
+    "storyHotspot": "table",
     "storyNext": "D1-04",
-    "aiStage": "D1_FAMILY",
-    "storyHotspot": "table"
+    "storyConfirm": "是否开始第一次家庭晚餐？",
+    "aiStage": "D1_FAMILY"
   },
   "D1-04": {
     "id": "D1-04",
     "title": "第一次家庭晚餐",
     "room": "room_kitchen",
     "lockDoors": true,
-    "showNpcs": [
-      "sisi",
-      "boss"
-    ],
+    "showNpcs": ["sisi", "boss"],
     "npcPose": {
-      "sisi": {
-        "x": 1050,
-        "sprite": "sisi_idle"
-      },
-      "boss": {
-        "x": 1380,
-        "sprite": "boss_idle"
-      }
+      "sisi": { "x": 1050, "sprite": "sisi_idle" },
+      "boss": { "x": 1380, "sprite": "boss_idle" }
     },
+    "briefing": [
+      { "speaker": "旁白", "text": "家庭晚餐。桌上的「食物」很可疑——怎么选都会继续，但会留下不同标记。", "when": { "flags.refuseMother": false } },
+      { "speaker": "旁白", "text": "他们已经坐好。你仍可下厨挽回，也可把盘子推开——一意孤行会更冷。", "when": { "flags.refuseMother": true } },
+      { "speaker": "danmaku", "text": "那盘肉在看我……是错觉吗？" }
+    ],
     "autoDialogue": true,
     "dialogue": [
       {
         "speaker": "sisi",
-        "text": "妈妈，饭饭。"
+        "text": "妈妈，饭饭。",
+        "portrait": "sisi_front",
+        "when": { "flags.refuseMother": false }
       },
       {
-        "speaker": "system",
-        "text": "桌上的东西很新鲜。新鲜得过分。"
-      }
+        "speaker": "sisi",
+        "text": "……你也坐。不坐也行。",
+        "portrait": "sisi_front",
+        "when": { "flags.refuseMother": true }
+      },
+      {
+        "speaker": "旁白",
+        "text": "桌上的东西很新鲜。新鲜得过分。",
+        "horror": 8,
+        "horrorReason": "可疑「食物」带来生理性不适"
+      },
+      { "speaker": "system", "text": "请选择用餐态度。选项汇流下一节点；做饭可大幅挽回关系。" }
     ],
     "choices": [
       {
-        "text": "先吃一口（装作若无其事）",
+        "text": "我来做给你们吃",
         "effects": {
-          "inventory.ateStrangeFood": true
+          "flags.refuseMother": false,
+          "flags.pushAway": false,
+          "flags.fearBoss": false,
+          "flags.coldDinner": false,
+          "familyTrust.sisi": 1,
+          "familyTrust.boss": 1,
+          "horror": -16,
+          "horrorReason": "抢过灶台照顾家人——强力挽回，把恐怖晚餐改成家务"
         },
         "next": "D1-04b"
       },
       {
-        "text": "我来做给你们吃",
+        "text": "先吃一口（装作若无其事）",
+        "when": { "flags.refuseMother": false },
         "effects": {
-          "familyTrust.sisi": 1,
-          "familyTrust.boss": 1
+          "inventory.ateStrangeFood": true,
+          "horror": 10,
+          "horrorReason": "硬吃来源不明的餐食，恶心与恐惧叠加"
         },
         "next": "D1-04b"
       },
       {
         "text": "看他们先动筷",
-        "effects": {},
+        "when": { "flags.refuseMother": false },
+        "effects": {
+          "horror": 4,
+          "horrorReason": "观望可疑食物，不安未消"
+        },
+        "next": "D1-04b"
+      },
+      {
+        "text": "把盘子推开",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.coldDinner": true,
+          "flags.refuseMother": true,
+          "familyTrust.sisi": -1,
+          "familyTrust.boss": -1,
+          "horror": 14,
+          "horrorReason": "当众拒食推盘——冷桌标记落下，信任再降"
+        },
+        "next": "D1-04b"
+      },
+      {
+        "text": "坐下，但不吃",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.coldDinner": true,
+          "horror": 8,
+          "horrorReason": "人在桌旁心不在——晚餐冷场，惊悚微升"
+        },
         "next": "D1-04b"
       }
     ],
@@ -362,34 +639,50 @@
     "title": "餐后",
     "room": "room_kitchen",
     "lockDoors": false,
-    "showNpcs": [
-      "sisi",
-      "boss"
+    "allowRooms": [
+      "room_living",
+      "room_kitchen",
+      "room_bedroom",
+      "room_bathroom",
+      "room_xuanguan"
     ],
+    "showNpcs": ["sisi", "boss"],
     "npcPose": {
-      "sisi": {
-        "x": 1050,
-        "sprite": "sisi_idle"
-      },
-      "boss": {
-        "x": 1380,
-        "sprite": "boss_idle"
-      }
+      "sisi": { "x": 1050, "sprite": "sisi_idle" },
+      "boss": { "x": 1380, "sprite": "boss_idle" }
     },
     "autoDialogue": true,
     "dialogue": [
       {
+        "speaker": "旁白",
+        "text": "夜色压下来了。回卧室休息，第一天就快结束。",
+        "when": { "flags.coldDinner": false }
+      },
+      {
+        "speaker": "旁白",
+        "text": "桌上的盘子还在原处。没人再劝你。夜色因此更沉。",
+        "horror": 4,
+        "horrorReason": "冷桌余波：被拒绝的晚餐让空寂感上升",
+        "when": { "flags.coldDinner": true }
+      },
+      {
         "speaker": "system",
-        "text": "夜色压下来了。回卧室休息吧。"
+        "text": "可直接选「去卧室」，或自行走过去触发睡前对话。"
+      },
+      {
+        "speaker": "danmaku",
+        "text": "连饭都不吃……这局要凉。",
+        "when": { "flags.coldDinner": true }
       }
     ],
     "choices": [
-      {
-        "text": "去卧室",
-        "effects": {},
-        "next": "D1-05"
-      }
+      { "text": "去卧室", "effects": {}, "next": "D1-05" }
     ],
+    "storyHotspot": "bed",
+    "storyNext": "D1-05",
+    "storyConfirm": "是否上床，进入第一夜？",
+    "advanceHint": "目标：回卧室休息（可选床确认，或点选项）",
+    "guide": { "type": "door", "doorId": "to_living_k", "text": "回客厅→卧室" },
     "aiStage": "D1_DINNER"
   },
   "D1-05": {
@@ -398,53 +691,113 @@
     "room": "room_bedroom",
     "night": true,
     "lockDoors": true,
-    "showNpcs": [
-      "sisi",
-      "boss"
-    ],
+    "showNpcs": ["sisi", "boss"],
     "npcPose": {
-      "sisi": {
-        "x": 980,
-        "sprite": "sisi_idle"
-      },
-      "boss": {
-        "x": 1450,
-        "sprite": "boss_idle"
-      }
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1450, "sprite": "boss_idle" }
     },
+    "briefing": [
+      { "speaker": "旁白", "text": "第一夜。选一句晚安即可结算——你已经活过最危险的开局。", "when": { "flags.refuseMother": false } },
+      { "speaker": "旁白", "text": "第一夜。最后一次机会：说晚安认下他们，或背对入睡让冷意过夜。", "when": { "flags.refuseMother": true } },
+      { "speaker": "danmaku", "text": "居然活过第一天？这近视眼有点东西。", "when": { "flags.refuseMother": false } },
+      { "speaker": "danmaku", "text": "还在拒家？明早积分表要好看了……", "when": { "flags.refuseMother": true } }
+    ],
     "autoDialogue": true,
     "dialogue": [
       {
-        "speaker": "system",
-        "text": "第一夜。房子很冷，但有人在。"
+        "speaker": "旁白",
+        "text": "房子很冷，但有人在。",
+        "horror": -6,
+        "horrorReason": "同住带来的安全感压过空屋恐惧",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "旁白",
+        "text": "房子很冷。有人在——你却装作听不见。",
+        "horror": 4,
+        "horrorReason": "拒认同住者，空屋感反而更强",
+        "when": { "flags.refuseMother": true }
       },
       {
         "speaker": "sisi",
-        "text": "今晚，思思要跟妈妈睡。"
+        "text": "今晚，思思要跟妈妈睡。",
+        "portrait": "sisi_front",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "sisi",
+        "text": "……思思可以睡这边。你不说也行。",
+        "portrait": "sisi_front",
+        "when": { "flags.refuseMother": true }
       },
       {
         "speaker": "boss",
-        "text": "……我坐这边。"
-      }
+        "text": "……我坐这边。",
+        "portrait": "boss_front",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "boss",
+        "text": "……随你。别半夜尖叫就行。",
+        "portrait": "boss_front",
+        "when": { "flags.refuseMother": true }
+      },
+      { "speaker": "system", "text": "请选择睡前态度。选项汇流结算。" }
     ],
     "choices": [
       {
         "text": "跟思思说晚安",
+        "when": { "flags.refuseMother": false },
         "effects": {
-          "familyTrust.sisi": 1
+          "familyTrust.sisi": 1,
+          "horror": -8,
+          "horrorReason": "睡前认亲，惊悚继续回落"
         },
         "next": "END_DAY1"
       },
       {
         "text": "看向床边的他",
+        "when": { "flags.refuseMother": false },
         "effects": {
-          "familyTrust.boss": 1
+          "familyTrust.boss": 1,
+          "horror": -5,
+          "horrorReason": "接受「丈夫」同室，当作家人而非怪物"
         },
         "next": "END_DAY1"
       },
       {
         "text": "关灯睡",
-        "effects": {},
+        "when": { "flags.refuseMother": false },
+        "effects": {
+          "horror": -3,
+          "horrorReason": "强行当普通夜晚睡觉，略压惊悚"
+        },
+        "next": "END_DAY1"
+      },
+      {
+        "text": "……晚安。今晚一起睡",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.refuseMother": false,
+          "flags.pushAway": false,
+          "flags.fearBoss": false,
+          "flags.coldDinner": false,
+          "familyTrust.sisi": 1,
+          "familyTrust.boss": 1,
+          "horror": -20,
+          "horrorReason": "睡前最终挽回：认下同室家人，惊悚大幅回落"
+        },
+        "next": "END_DAY1"
+      },
+      {
+        "text": "背对她们，自己睡",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.refuseMother": true,
+          "familyTrust.sisi": -1,
+          "horror": 10,
+          "horrorReason": "最终仍拒认——冷意过夜，惊悚上升"
+        },
         "next": "END_DAY1"
       }
     ],
@@ -456,41 +809,51 @@
     "room": "room_bedroom",
     "night": true,
     "lockDoors": false,
-    "showNpcs": [
-      "sisi",
-      "boss"
+    "allowRooms": [
+      "room_xuanguan",
+      "room_living",
+      "room_kitchen",
+      "room_bedroom",
+      "room_bathroom"
     ],
+    "showNpcs": ["sisi", "boss"],
     "npcPose": {
-      "sisi": {
-        "x": 980,
-        "sprite": "sisi_idle"
-      },
-      "boss": {
-        "x": 1450,
-        "sprite": "boss_idle"
-      }
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1450, "sprite": "boss_idle" }
     },
     "ending": true,
+    "endTitle": "第一天结束",
+    "endDesc": "你在 30 层活过了第一夜。后续天数已接通——可进入第二天。",
+    "endNext": "D2-00",
     "autoDialogue": true,
     "dialogue": [
       {
         "speaker": "system",
-        "text": "第一天结束。你与「家人」活过了最危险的初夜。"
+        "text": "第一天结算。你与「家人」活过了最危险的初夜。点顶部惊悚可回顾升降原因；若按原书，积分约等于 100−当前惊悚。",
+        "when": { "flags.refuseMother": false }
       },
       {
         "speaker": "system",
-        "text": "存档已写入。后续天数资源与提示词已预置。点击继续进入结算。"
+        "text": "第一天结算。你活下来了——但拒认家人的痕迹还在。点顶部惊悚可回顾升降原因；积分约等于 100−当前惊悚，这条路通常更低。",
+        "when": { "flags.refuseMother": true }
+      },
+      {
+        "speaker": "旁白",
+        "text": "存档可写入多个槽位。后续天数资源已预置；灌入 API 密钥后可在场景里与 NPC 自由对话。"
+      },
+      {
+        "speaker": "danmaku",
+        "text": "？？？她真把诡异当家人养？",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "danmaku",
+        "text": "拒了一整天还没死……明天怕是要清算吧。",
+        "when": { "flags.refuseMother": true }
       }
     ],
     "choices": [
-      {
-        "text": "进入结算",
-        "effects": {
-          "flags.day1_cleared": true
-        },
-        "next": null,
-        "showEnd": true
-      }
+      { "text": "进入结算", "effects": { "flags.day1_cleared": true }, "next": null, "showEnd": true }
     ],
     "aiStage": "D1_NIGHT"
   }

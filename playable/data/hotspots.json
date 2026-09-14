@@ -6,6 +6,12 @@
     "label": "血迹",
     "type": "observe",
     "text": "地板上的红……像水渍。大概吧。反正我看不太清。",
+    "horror": 5,
+    "horrorReason": "盯着玄关血迹，不适上升",
+    "prop": "blood_stain",
+    "floorDecal": true,
+    "displayW": 240,
+    "displayH": 100,
     "nodes": ["P04", "D1-01"]
   },
   {
@@ -13,8 +19,11 @@
     "room": "room_xuanguan",
     "x": 2000,
     "label": "房门",
-    "type": "observe",
+    "type": "observe_then_enter",
     "text": "门缝里透出一点凉气。里面像有人在等。",
+    "enterLabel": "进入客厅",
+    "enterDoorId": "to_living",
+    "peekFlag": "frontDoorPeeked",
     "nodes": ["P04"]
   },
   {
@@ -34,10 +43,13 @@
     "x": 760,
     "label": "拖把",
     "type": "pickup",
-    "text": "我把拖把拿起来了。地板总得有人拖。",
+    "text": "血渍拖把……我把它拖过客厅。地板总算像样一点了。",
     "inventory": "mop",
-    "prop": "mop",
-    "nodes": ["D1-02", "D1-03", "D1-03b", "FREE_D1", "D1-04", "D1-05", "END_DAY1"]
+    "prop": "mop_blood",
+    "livingVariant": "clean",
+    "horror": -4,
+    "horrorReason": "拖干净客厅，把「家」打理好，心里踏实",
+    "nodes": ["D1-02", "D1-03", "D1-03b", "FREE_D1", "D1-04", "D1-05", "END_DAY1", "FREE_D2", "D2-05", "D2-06", "END_DAY2"]
   },
   {
     "id": "towel",
@@ -58,7 +70,7 @@
     "label": "窗户",
     "type": "observe",
     "text": "楼很高。外面像有黑雾在游。",
-    "nodes": ["D1-02", "D1-03", "D1-03b", "FREE_D1", "D1-05", "END_DAY1"]
+    "nodes": ["D1-02", "D1-03", "D1-03b", "FREE_D1", "D1-05", "END_DAY1", "FREE_D2", "D2-06", "END_DAY2"]
   },
   {
     "id": "light_switch",
@@ -67,7 +79,7 @@
     "label": "灯开关",
     "type": "toggle_light",
     "text": "咔哒。光线变了一点。",
-    "nodes": ["FREE_D1", "D1-05", "END_DAY1"]
+    "nodes": ["FREE_D1", "D1-05", "END_DAY1", "FREE_D2", "D2-06", "END_DAY2"]
   },
   {
     "id": "fridge",
@@ -76,7 +88,7 @@
     "label": "冰箱",
     "type": "observe",
     "text": "冰箱里有菜。还有一些……我选择当作是肉。",
-    "nodes": ["FREE_D1", "D1-04"]
+    "nodes": ["FREE_D1", "D1-04", "FREE_D2", "D2-05"]
   },
   {
     "id": "table",
@@ -87,7 +99,7 @@
     "text": "餐桌已经摆好了。",
     "triggerNode": "D1-04",
     "prop": "meat_dish",
-    "nodes": ["FREE_D1", "D1-04"]
+    "nodes": ["FREE_D1", "D1-04", "FREE_D2", "D2-05"]
   },
   {
     "id": "bed",
@@ -97,7 +109,7 @@
     "type": "story",
     "text": "床铺得很整齐，却有一股冷意。",
     "triggerNode": "D1-05",
-    "nodes": ["FREE_D1", "D1-05"]
+    "nodes": ["FREE_D1", "D1-05", "FREE_D2", "D2-06", "D3-05"]
   },
   {
     "id": "bathtub",
@@ -106,6 +118,112 @@
     "label": "浴缸",
     "type": "observe",
     "text": "瓷砖缝里有淡淡的红。我当它是铁锈。",
-    "nodes": ["D1-02", "D1-03b", "FREE_D1"]
+    "nodes": ["D1-02", "D1-03b", "FREE_D1", "FREE_D2"]
+  },
+  {
+    "id": "face_mask",
+    "room": "room_bathroom",
+    "x": 1280,
+    "label": "黄瓜面膜",
+    "type": "pickup",
+    "text": "凉丝丝的面膜。黑老太要是还在闹，也许能用上。",
+    "inventory": "faceMask",
+    "prop": "cucumber_mask",
+    "nodes": ["FREE_D2", "D2-04", "D2-05"]
+  },
+  {
+    "id": "snakeskin_sack",
+    "room": "room_xuanguan",
+    "x": 980,
+    "label": "蛇皮袋",
+    "type": "observe",
+    "text": "门口多了个鼓囊囊的袋子。我当它是买菜回来的。",
+    "horror": 3,
+    "horrorReason": "蛇皮袋鼓得过分，不适轻轻抬了一下",
+    "prop": "snakeskin_sack",
+    "nodes": ["FREE_D2", "D2-03", "D2-05", "D2-06"]
+  },
+  {
+    "id": "phone_observe",
+    "room": "room_living",
+    "x": 640,
+    "label": "手机",
+    "type": "observe",
+    "text": "私聊还停在红姐那句「攻略家人」。系统没拦她说话——这本身就可疑。",
+    "prop": "phone",
+    "nodes": ["D2-01", "FREE_D2", "D3-01", "D4-HOME", "D5-HOME"]
+  },
+  {
+    "id": "cleaver_observe",
+    "room": "room_living",
+    "x": 1520,
+    "label": "菜刀",
+    "type": "observe",
+    "text": "刀柄还带着他的体温。原书里这叫「爱的屠刀」——我选择先当它是防身用的。",
+    "prop": "cleaver",
+    "nodes": ["D3-03", "D3-04", "D3-05", "END_DAY3", "D4-00"]
+  },
+  {
+    "id": "elevator_panel",
+    "room": "room_corridor",
+    "x": 1280,
+    "label": "电梯",
+    "type": "open_floor_bar",
+    "text": "按钮面板亮着。选一层，或关掉继续走。",
+    "nodes": ["FREE_VISIT_D4", "FREE_VISIT_D5"]
+  },
+  {
+    "id": "door_f29",
+    "room": "room_corridor",
+    "x": 720,
+    "label": "29层门",
+    "type": "visit_floor",
+    "floor": "29",
+    "nodes": ["FREE_VISIT_D4", "FREE_VISIT_D5"]
+  },
+  {
+    "id": "door_f27",
+    "room": "room_corridor",
+    "x": 1080,
+    "label": "27层门",
+    "type": "visit_floor",
+    "floor": "27",
+    "nodes": ["FREE_VISIT_D4", "FREE_VISIT_D5"]
+  },
+  {
+    "id": "door_f22",
+    "room": "room_corridor",
+    "x": 1440,
+    "label": "22层门",
+    "type": "visit_floor",
+    "floor": "22",
+    "nodes": ["FREE_VISIT_D4", "FREE_VISIT_D5"]
+  },
+  {
+    "id": "door_f15",
+    "room": "room_corridor",
+    "x": 1800,
+    "label": "15层门",
+    "type": "visit_floor",
+    "floor": "15",
+    "nodes": ["FREE_VISIT_D5"]
+  },
+  {
+    "id": "door_f10",
+    "room": "room_corridor",
+    "x": 1960,
+    "label": "10层门",
+    "type": "visit_floor",
+    "floor": "10",
+    "nodes": ["FREE_VISIT_D5"]
+  },
+  {
+    "id": "door_f8",
+    "room": "room_corridor",
+    "x": 2200,
+    "label": "8层门",
+    "type": "visit_floor",
+    "floor": "8",
+    "nodes": ["FREE_VISIT_D5"]
   }
 ]

@@ -1,0 +1,52 @@
+{
+  "29": {
+    "template": "V_FRIENDLY",
+    "name": "29层 · 热情母子",
+    "node": "V_FRIENDLY",
+    "dayMin": 4,
+    "visitFlag": "visitedFriendly",
+    "x": 720
+  },
+  "27": {
+    "template": "V_HOSTILE",
+    "name": "27层 · 双生",
+    "node": "V_HOSTILE",
+    "dayMin": 4,
+    "visitFlag": "visitedHostile",
+    "x": 1080
+  },
+  "22": {
+    "template": "V_PUZZLE",
+    "name": "22层 · 扮演屋",
+    "node": "V_PUZZLE",
+    "dayMin": 4,
+    "visitFlag": "visitedPuzzle",
+    "x": 1440
+  },
+  "15": {
+    "template": "MEET",
+    "name": "15层 · 找活人",
+    "node": "D5-02",
+    "dayMin": 5,
+    "visitFlag": "metFangyuan",
+    "x": 1800,
+    "meetOnly": true
+  },
+  "10": {
+    "template": "V_EMPTY",
+    "name": "10层 · 空房",
+    "node": "V_EMPTY",
+    "dayMin": 5,
+    "visitFlag": "visitedEmpty",
+    "x": 1960
+  },
+  "8": {
+    "template": "V_BOSS_NEAR",
+    "name": "8层 · 高危",
+    "node": "V_BOSS_NEAR",
+    "dayMin": 5,
+    "visitFlag": "visitedBossNear",
+    "x": 2200,
+    "danger": true
+  }
+}

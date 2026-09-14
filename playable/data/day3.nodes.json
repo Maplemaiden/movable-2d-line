@@ -1,0 +1,365 @@
+{
+  "D3-00": {
+    "id": "D3-00",
+    "title": "第三天 · 播报",
+    "room": "room_bedroom",
+    "night": false,
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1450, "sprite": "boss_idle" }
+    },
+    "onEnter": { "day": 3, "aliveCount": 12, "floor": 30 },
+    "briefing": [
+      { "speaker": "system", "text": "第三天。存活约 12 人。明天开始拜访邻居。" },
+      { "speaker": "旁白", "text": "红姐又来私聊了。这次她说「互助」。" },
+      { "speaker": "danmaku", "text": "明神也是这天开始乱的……" }
+    ],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "sisi",
+        "text": "妈妈明天要出门？思思不能去吗？",
+        "portrait": "sisi_front",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "sisi",
+        "text": "……你要走？那把刀呢。",
+        "portrait": "sisi_front",
+        "when": { "flags.refuseMother": true }
+      }
+    ],
+    "choices": [
+      { "text": "先回红姐的消息", "effects": {}, "next": "D3-01" }
+    ],
+    "aiStage": "D3_VISIT_BRIEF"
+  },
+  "D3-01": {
+    "id": "D3-01",
+    "title": "红姐 · 拜访互助",
+    "room": "room_living",
+    "night": false,
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 1100, "sprite": "sisi_idle" },
+      "boss": { "x": 1500, "sprite": "boss_idle" }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "红姐",
+        "text": "明天拜访拿卡。遇到玩家就说「我是 30 层宁念的朋友」，互相给方便。姐姐罩你。",
+        "portrait": "ningnian_phone",
+        "side": "right"
+      },
+      {
+        "speaker": "旁白",
+        "text": "她没提「杀了也能拿卡」。半真半假。",
+        "horror": 2,
+        "horrorReason": "互助说辞太顺，像在喂一条看不见的线"
+      },
+      {
+        "speaker": "红姐",
+        "text": "明神第六天……算了，不扫兴。你先活过拜访。",
+        "portrait": "ningnian_phone",
+        "side": "right"
+      }
+    ],
+    "choices": [
+      {
+        "text": "我愿意互助",
+        "when": { "flags.trustHongjie": true },
+        "effects": {
+          "flags.trustHongjie": true,
+          "horror": -1,
+          "horrorReason": "答应组队，紧张略松（仍不知杀夺卡）"
+        },
+        "next": "D3-02"
+      },
+      {
+        "text": "互助可以，先看看再说",
+        "effects": {},
+        "next": "D3-02"
+      },
+      {
+        "text": "明神第六天怎么死的你怎么不说完？",
+        "when": { "flags.suspectHongjie": true },
+        "effects": {
+          "flags.suspectHongjie": true,
+          "horror": 3,
+          "horrorReason": "追问死亡缺口，疑心加重，仍无全文"
+        },
+        "next": "D3-02"
+      },
+      {
+        "text": "已读。不回。",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.trustHongjie": false,
+          "horror": 2,
+          "horrorReason": "回绝互助，之后更难找到同伴"
+        },
+        "next": "D3-02"
+      }
+    ],
+    "aiStage": "D3_VISIT_BRIEF"
+  },
+  "D3-02": {
+    "id": "D3-02",
+    "title": "家人不能随行",
+    "room": "room_living",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss", "liuaiguo", "licuilan"],
+    "npcPose": {
+      "sisi": { "x": 900, "sprite": "sisi_idle" },
+      "boss": { "x": 1200, "sprite": "boss_idle" },
+      "liuaiguo": { "x": 1560, "sprite": "liuaiguo_idle" },
+      "licuilan": { "x": 1840, "sprite": "licuilan_idle" }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "system",
+        "text": "条例：本楼原住民前三天不可随玩家拜访。第四天起，你得自己下楼。"
+      },
+      {
+        "speaker": "sisi",
+        "text": "不公平。思思最能吓唬人。",
+        "portrait": "sisi_angry"
+      },
+      {
+        "speaker": "boss",
+        "text": "规矩不是我定的。出门前，把这个拿上。",
+        "portrait": "boss_front"
+      },
+      {
+        "speaker": "旁白",
+        "text": "他从胸口的阴影里抽出一把刀。刀身亮得不像厨房用具。",
+        "horror": 6,
+        "horrorReason": "「爱的屠刀」出鞘，气场先压过来"
+      }
+    ],
+    "choices": [
+      { "text": "那是什么刀？", "effects": {}, "next": "D3-03" }
+    ],
+    "aiStage": "D3_VISIT_BRIEF"
+  },
+  "D3-03": {
+    "id": "D3-03",
+    "title": "授刀仪式",
+    "room": "room_living",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 1080, "sprite": "sisi_idle" },
+      "boss": { "x": 1420, "sprite": "boss_idle" }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "boss",
+        "text": "爱的屠刀。SSSSS。吓人不杀人家——除非那人先把刀对准你。",
+        "portrait": "boss_chest"
+      },
+      {
+        "speaker": "旁白",
+        "text": "他递过来。接不接，都会走进明天的拜访。",
+        "horror": 4,
+        "horrorReason": "刀本身带着杀过的气味"
+      },
+      { "speaker": "system", "text": "刀是威慑与防身，不是刷怪升级。拒收不会卡死。" }
+    ],
+    "choices": [
+      {
+        "text": "接过菜刀",
+        "effects": {
+          "flags.gotCleaver": true,
+          "inventory.cleaver": true,
+          "familyTrust.boss": 1,
+          "horror": -4,
+          "horrorReason": "把刀当成家人给的护身符"
+        },
+        "next": "D3-04"
+      },
+      {
+        "text": "我不需要武器",
+        "when": { "flags.refuseMother": false },
+        "effects": {
+          "flags.gotCleaver": false,
+          "familyTrust.boss": 1,
+          "horror": -2,
+          "horrorReason": "拒刀却仍认家，他有些担心，也有些动容"
+        },
+        "next": "D3-04"
+      },
+      {
+        "text": "拿开！那东西杀过人",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.gotCleaver": false,
+          "flags.fearBoss": true,
+          "familyTrust.boss": -1,
+          "horror": 10,
+          "horrorReason": "把授刀当成凶器逼近"
+        },
+        "next": "D3-04"
+      }
+    ],
+    "aiStage": "D3_VISIT_BRIEF"
+  },
+  "D3-04": {
+    "id": "D3-04",
+    "title": "思思红裙送行",
+    "room": "room_living",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 1180, "sprite": "sisi_red_idle" },
+      "boss": { "x": 1500, "sprite": "boss_idle" }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "sisi",
+        "text": "妈妈出门，思思要穿红的。红的比较有气场。",
+        "portrait": "sisi_blood_front"
+      },
+      {
+        "speaker": "旁白",
+        "text": "裙子又红了。这次更像是她自己选的。",
+        "horror": 3,
+        "horrorReason": "红裙气场回来，旁人会怕，宁念仍可能当童装"
+      },
+      {
+        "speaker": "boss",
+        "text": "随她。你记得回 30 层。",
+        "portrait": "boss_front"
+      }
+    ],
+    "choices": [
+      {
+        "text": "穿，开心最重要",
+        "effects": {
+          "flags.sisiRedSkirtBoost": true,
+          "familyTrust.sisi": 1,
+          "horror": -6,
+          "horrorReason": "鼓励红裙，把血色写成女儿的得意"
+        },
+        "next": "D3-05"
+      },
+      {
+        "text": "穿白的，别吓人",
+        "effects": {
+          "flags.sisiRedSkirtBoost": false,
+          "familyTrust.sisi": -1,
+          "horror": 4,
+          "horrorReason": "拦下红裙，思思闷，拜访气场弱"
+        },
+        "next": "D3-05"
+      }
+    ],
+    "aiStage": "D3_VISIT_BRIEF"
+  },
+  "D3-05": {
+    "id": "D3-05",
+    "title": "争风 · 一起睡",
+    "room": "room_bedroom",
+    "night": true,
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1450, "sprite": "boss_idle" }
+    },
+    "briefing": [
+      { "speaker": "旁白", "text": "出发前夜。两个人同时要你。这是正史里的喜剧节点。" }
+    ],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "sisi",
+        "text": "今晚思思要跟妈妈睡。爸爸出去。",
+        "portrait": "sisi_front",
+        "side": "right"
+      },
+      {
+        "speaker": "boss",
+        "text": "我坐床边。你管不着。",
+        "portrait": "boss_angry",
+        "side": "left"
+      },
+      { "speaker": "system", "text": "选边会留下嫉妒；「一起睡」是原书解法。" }
+    ],
+    "choices": [
+      {
+        "text": "那就一起睡！",
+        "effects": {
+          "flags.familyWarMediated": true,
+          "familyTrust.sisi": 2,
+          "familyTrust.boss": 2,
+          "horror": -16,
+          "horrorReason": "正史喜剧：两头哄住，惊悚大降"
+        },
+        "next": "END_DAY3"
+      },
+      {
+        "text": "今晚跟思思",
+        "effects": {
+          "familyTrust.sisi": 1,
+          "familyTrust.boss": -1,
+          "horror": -4,
+          "horrorReason": "选边思思，Boss 闷"
+        },
+        "next": "END_DAY3"
+      },
+      {
+        "text": "你坐这边就好",
+        "effects": {
+          "familyTrust.boss": 1,
+          "familyTrust.sisi": -1,
+          "horror": -3,
+          "horrorReason": "选边 Boss，思思咬被角"
+        },
+        "next": "END_DAY3"
+      }
+    ],
+    "aiStage": "D3_VISIT_BRIEF"
+  },
+  "END_DAY3": {
+    "id": "END_DAY3",
+    "title": "第三天结束",
+    "room": "room_bedroom",
+    "night": true,
+    "lockDoors": false,
+    "allowRooms": [
+      "room_xuanguan",
+      "room_living",
+      "room_kitchen",
+      "room_bedroom",
+      "room_bathroom"
+    ],
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1450, "sprite": "boss_idle" }
+    },
+    "ending": true,
+    "endTitle": "第三天结束",
+    "endDesc": "拜访从明天开始。家人不能随行。刀与红裙会改变你在楼里的气场。",
+    "endNext": "D4-00",
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "system",
+        "text": "第三天结算。安全日到头了。明天下楼拿卡——选项仍汇流，不卡死。"
+      }
+    ],
+    "choices": [
+      { "text": "进入结算", "effects": { "flags.day3_cleared": true }, "next": null, "showEnd": true }
+    ],
+    "aiStage": "D3_VISIT_BRIEF"
+  }
+}

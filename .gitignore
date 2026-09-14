@@ -1,11 +1,11 @@
-node_modules/
-.env
-.env.*
-!.env.example
+﻿# backups & previews
+**/_bak_*/
+**/_preview/
+playable/tools/_ui_shot/
+# OS / editor
 .DS_Store
 Thumbs.db
 *.log
-.vscode/
-.idea/
-dist/
-.cache/
+
+node_modules/
+playable/node_modules/

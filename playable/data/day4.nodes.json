@@ -1,0 +1,239 @@
+{
+  "D4-00": {
+    "id": "D4-00",
+    "title": "第四天 · 出门",
+    "room": "room_xuanguan",
+    "night": false,
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_red_idle" },
+      "boss": { "x": 1400, "sprite": "boss_idle" }
+    },
+    "onEnter": { "day": 4, "aliveCount": 10, "floor": 30 },
+    "briefing": [
+      { "speaker": "system", "text": "拜访日。下楼拿卡。家人留在 30 层。" },
+      { "speaker": "旁白", "text": "思思穿着红裙送到门口。刀若在腰上，楼道会安静一点。", "when": { "flags.sisiRedSkirtBoost": true } },
+      { "speaker": "旁白", "text": "思思没穿红的，只揪着你的袖口。", "when": { "flags.sisiRedSkirtBoost": false } }
+    ],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "sisi",
+        "text": "早点回来。谁敢拦妈妈，回来告诉思思。",
+        "portrait": "sisi_blood_front",
+        "when": { "flags.sisiRedSkirtBoost": true }
+      },
+      {
+        "speaker": "sisi",
+        "text": "……白裙子也可以。你别死在外面。",
+        "portrait": "sisi_front",
+        "when": { "flags.sisiRedSkirtBoost": false }
+      },
+      {
+        "speaker": "boss",
+        "text": "报「30 层宁念」。别先拔刀——除非他们先拔。",
+        "portrait": "boss_front",
+        "when": { "inventory.cleaver": true }
+      },
+      {
+        "speaker": "boss",
+        "text": "没有刀就靠嘴。嘴也是武器。",
+        "portrait": "boss_front",
+        "when": { "inventory.cleaver": false }
+      }
+    ],
+    "choices": [
+      {
+        "text": "下楼进楼道",
+        "effects": { "visitReturnNode": "FREE_VISIT_D4", "floor": 30 },
+        "next": "FREE_VISIT_D4"
+      }
+    ],
+    "aiStage": "D4_VISIT"
+  },
+  "FREE_VISIT_D4": {
+    "id": "FREE_VISIT_D4",
+    "title": "楼道 · 自由拜访",
+    "room": "room_corridor",
+    "night": false,
+    "lockDoors": false,
+    "allowRooms": ["room_corridor"],
+    "unlockPreset": "visit_out",
+    "floorBar": true,
+    "visitDayMin": 4,
+    "visitHomeNode": "D4-03",
+    "visitHomeAlt": "D4-HOME",
+    "visitHomeFlag": "metSuxiaomo",
+    "showNpcs": [],
+    "spawnPlayerX": 520,
+    "exploreHint": "楼道可走。走到电梯按 E 打开楼层条；也可走到两侧门牌按 E 进邻家。左侧门回 30 层。",
+    "briefing": [
+      { "speaker": "旁白", "text": "电梯与门牌亮着。这不是选项菜单——你可以在楼道里左右走。" },
+      { "speaker": "system", "text": "按 E 开电梯选层，或走近门牌拜访。左侧「回 30 层」结束今日拜访。" }
+    ],
+    "briefingChoice": { "text": "开始走动", "unlockMove": true },
+    "advanceHint": "目标：电梯选层拜访，或左侧回 30 层",
+    "guide": { "type": "hotspot", "hotspotId": "elevator_panel", "text": "电梯 · E" },
+    "autoDialogue": false,
+    "nextOnDoor": { "to_home_from_corridor": "__VISIT_HOME__" },
+    "aiStage": "D4_VISIT"
+  },
+  "D4-03": {
+    "id": "D4-03",
+    "title": "遇学生妹",
+    "room": "room_corridor",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "苏小茉",
+        "text": "你是 30 层那位近视眼？我是苏小茉。一个人好怕，组队吗？"
+      },
+      {
+        "speaker": "旁白",
+        "text": "她看起来像普通大学生。弹幕在喊「别信任何人」。"
+      },
+      { "speaker": "danmaku", "text": "组队容易背刺——也可能多活一天。" }
+    ],
+    "choices": [
+      {
+        "text": "组队。互相报平安",
+        "effects": {
+          "flags.visitWithFriends": true,
+          "flags.metSuxiaomo": true,
+          "horror": -4,
+          "horrorReason": "有人同行，楼道没那么空"
+        },
+        "next": "D4-HOME"
+      },
+      {
+        "text": "各自拜访，保持联络",
+        "effects": {
+          "flags.metSuxiaomo": true,
+          "horror": -1,
+          "horrorReason": "留了联系，没绑死"
+        },
+        "next": "D4-HOME"
+      },
+      {
+        "text": "无视，进电梯",
+        "effects": {
+          "flags.metSuxiaomo": true,
+          "horror": 2,
+          "horrorReason": "把活人当路人，楼道更冷"
+        },
+        "next": "D4-HOME"
+      },
+      {
+        "text": "抢她的卡",
+        "when": { "flags.hunterTrack": true },
+        "effects": {
+          "visitCards": 4,
+          "flags.hunterTrack": true,
+          "flags.blackHearts": true,
+          "flags.metSuxiaomo": true,
+          "horror": 10,
+          "horrorReason": "对玩家出手夺卡，猎手轨加深"
+        },
+        "next": "D4-HOME"
+      }
+    ],
+    "aiStage": "D4_VISIT"
+  },
+  "D4-HOME": {
+    "id": "D4-HOME",
+    "title": "回家复盘",
+    "room": "room_living",
+    "night": true,
+    "lockDoors": false,
+    "allowRooms": [
+      "room_xuanguan",
+      "room_living",
+      "room_kitchen",
+      "room_bedroom",
+      "room_bathroom"
+    ],
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 1100, "sprite": "sisi_idle" },
+      "boss": { "x": 1480, "sprite": "boss_idle" }
+    },
+    "onEnter": { "floor": 30 },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "sisi",
+        "text": "回来了。有没有人欺负妈妈？",
+        "portrait": "sisi_front"
+      },
+      {
+        "speaker": "boss",
+        "text": "卡收着。别一次花光运气。",
+        "portrait": "boss_front"
+      },
+      {
+        "speaker": "旁白",
+        "text": "报纸边角和弹幕对不上。有人死得太整齐。",
+        "when": { "flags.suspectHongjie": true }
+      },
+      {
+        "speaker": "system",
+        "text": "若你一直怀疑红姐，今晚可以拼出半句隐藏规则。",
+        "when": { "flags.suspectHongjie": true }
+      }
+    ],
+    "choices": [
+      {
+        "text": "对照线索：杀玩家……也能拿卡？",
+        "when": { "flags.suspectHongjie": true },
+        "effects": {
+          "flags.knowKillSteal": true,
+          "clues.killSteal": true,
+          "clues.redSisterClue": true,
+          "horror": 6,
+          "horrorReason": "提前知悉杀夺卡，世界更脏，仍可不走猎手"
+        },
+        "next": "END_DAY4"
+      },
+      {
+        "text": "不深究，睡觉",
+        "effects": { "horror": -4, "horrorReason": "回家落地，惊悚回落" },
+        "next": "END_DAY4"
+      }
+    ],
+    "aiStage": "D4_VISIT"
+  },
+  "END_DAY4": {
+    "id": "END_DAY4",
+    "title": "第四天结束",
+    "room": "room_bedroom",
+    "night": true,
+    "lockDoors": false,
+    "allowRooms": [
+      "room_xuanguan",
+      "room_living",
+      "room_kitchen",
+      "room_bedroom",
+      "room_bathroom"
+    ],
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1450, "sprite": "boss_idle" }
+    },
+    "ending": true,
+    "endTitle": "第四天结束",
+    "endDesc": "拜访开始了。楼层条与可走楼道已接通。明天还能再下楼。",
+    "endNext": "D5-00",
+    "autoDialogue": true,
+    "dialogue": [
+      { "speaker": "system", "text": "第四天结算。拜访卡已写入背包计数。惊悚仍是唯一生死尺。" }
+    ],
+    "choices": [
+      { "text": "进入结算", "effects": { "flags.day4_cleared": true }, "next": null, "showEnd": true }
+    ],
+    "aiStage": "D4_VISIT"
+  }
+}

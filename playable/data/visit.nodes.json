@@ -1,0 +1,307 @@
+{
+  "V_HOSTILE": {
+    "id": "V_HOSTILE",
+    "title": "拜访 · 敌意双生",
+    "room": "room_visit_hostile",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "sound": "sting_low",
+    "dialogue": [
+      { "speaker": "旁白", "text": "门开了一条缝。里面两张一样的脸同时看过来。" },
+      {
+        "speaker": "？",
+        "text": "30 层的味道。滚。或者留下当晚餐。",
+        "horror": 10,
+        "horrorReason": "敌意邻居的压迫感"
+      },
+      { "speaker": "system", "text": "刀可震慑；认亲话术也可过。攻击会把轨道推向猎手。" }
+    ],
+    "choices": [
+      {
+        "text": "亮出屠刀：让开",
+        "when": { "inventory.cleaver": true },
+        "effects": {
+          "visitCards": 6,
+          "flags.visitedHostile": true,
+          "horror": -4,
+          "horrorReason": "用爱的屠刀震慑，拿到卡"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "我是 30 层宁念的朋友",
+        "when": { "flags.refuseMother": false },
+        "effects": {
+          "visitCards": 5,
+          "flags.visitedHostile": true,
+          "horror": -6,
+          "horrorReason": "认亲话术把敌意写成邻里"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "我是来杀怪的",
+        "effects": {
+          "flags.visitedHostile": true,
+          "flags.hunterTrack": true,
+          "horror": 12,
+          "horrorReason": "把邻居当怪宣战，冲突升级"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "关门就跑",
+        "effects": {
+          "flags.visitedHostile": true,
+          "horror": 4,
+          "horrorReason": "空手逃跑，虚惊一场"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "挥刀砍上去",
+        "when": { "inventory.cleaver": true },
+        "effects": {
+          "visitCards": 6,
+          "flags.visitedHostile": true,
+          "flags.hunterTrack": true,
+          "flags.blackHearts": true,
+          "horror": 8,
+          "horrorReason": "杀诡异夺卡：卡有了，幸福之心路线受损"
+        },
+        "returnVisit": true
+      }
+    ],
+    "aiStage": "D4_VISIT"
+  },
+  "V_FRIENDLY": {
+    "id": "V_FRIENDLY",
+    "title": "拜访 · 热情母子",
+    "room": "room_visit_friendly",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "dialogue": [
+      { "speaker": "旁白", "text": "开门的人笑得很满。桌上摆着茶和点心。" },
+      {
+        "speaker": "邻家",
+        "text": "30 层来的？快坐。卡我们有多的。",
+        "horror": 2,
+        "horrorReason": "热情过了头，反而有一点假"
+      }
+    ],
+    "choices": [
+      {
+        "text": "谢谢，我收下（寒暄）",
+        "effects": {
+          "visitCards": 6,
+          "flags.visitedFriendly": true,
+          "horror": -4,
+          "horrorReason": "友好拜访，顺利得卡"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "我是 30 层宁念的朋友",
+        "effects": {
+          "visitCards": 6,
+          "flags.visitedFriendly": true,
+          "familyTrust.sisi": 0,
+          "horror": -5,
+          "horrorReason": "报出家门，对方更热情"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "亮刀要卡",
+        "when": { "inventory.cleaver": true },
+        "effects": {
+          "visitCards": 6,
+          "flags.visitedFriendly": true,
+          "flags.hunterTrack": true,
+          "horror": 6,
+          "horrorReason": "对热情邻居拔刀，轨道偏猎手"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "客气两句就走",
+        "effects": {
+          "visitCards": 3,
+          "flags.visitedFriendly": true,
+          "horror": -1,
+          "horrorReason": "少拿一点，但安全离开"
+        },
+        "returnVisit": true
+      }
+    ],
+    "aiStage": "D4_VISIT"
+  },
+  "V_PUZZLE": {
+    "id": "V_PUZZLE",
+    "title": "拜访 · 扮演屋",
+    "room": "room_visit_puzzle",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "dialogue": [
+      { "speaker": "旁白", "text": "墙上贴满角色卡。报纸头条写着「互助」，边角却被人涂黑。" },
+      {
+        "speaker": "邻家",
+        "text": "你猜我是谁，我就给你卡。猜错，你留下一件东西。",
+        "horror": 6,
+        "horrorReason": "猜谜屋里的规则味"
+      }
+    ],
+    "choices": [
+      {
+        "text": "你也是想活过七天的人",
+        "effects": {
+          "visitCards": 5,
+          "flags.visitedPuzzle": true,
+          "clues.killSteal": true,
+          "horror": -8,
+          "horrorReason": "心灵说服：把扮演拆成求生"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "观察报纸：互助以外还有字",
+        "when": { "flags.suspectHongjie": true },
+        "effects": {
+          "visitCards": 5,
+          "flags.visitedPuzzle": true,
+          "flags.knowKillSteal": true,
+          "clues.killSteal": true,
+          "horror": 4,
+          "horrorReason": "读到涂黑的半句：杀——可夺卡（仍不强制猎杀）"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "亮刀破局",
+        "when": { "inventory.cleaver": true },
+        "effects": {
+          "visitCards": 4,
+          "flags.visitedPuzzle": true,
+          "flags.hunterTrack": true,
+          "horror": 5,
+          "horrorReason": "用刀打断谜题，卡拿到了，气氛坏了"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "我不玩，告辞",
+        "effects": {
+          "flags.visitedPuzzle": true,
+          "horror": 3,
+          "horrorReason": "空手离开谜屋"
+        },
+        "returnVisit": true
+      }
+    ],
+    "aiStage": "D4_VISIT"
+  },
+  "V_EMPTY": {
+    "id": "V_EMPTY",
+    "title": "拜访 · 空层",
+    "room": "room_visit_empty",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "旁白",
+        "text": "门没锁。屋里只剩骨头摆件和一张皱掉的拜访卡。",
+        "horror": 8,
+        "horrorReason": "原玩家已死层的空寂"
+      },
+      { "speaker": "system", "text": "可以拿走残留卡，也可以什么都不碰。" }
+    ],
+    "choices": [
+      {
+        "text": "捡起残留卡",
+        "effects": {
+          "visitCards": 2,
+          "flags.visitedEmpty": true,
+          "horror": 4,
+          "horrorReason": "从死者家里拿卡，手心发凉"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "关门离开",
+        "effects": {
+          "flags.visitedEmpty": true,
+          "horror": 2,
+          "horrorReason": "空房余悸"
+        },
+        "returnVisit": true
+      }
+    ],
+    "aiStage": "D4_VISIT"
+  },
+  "V_BOSS_NEAR": {
+    "id": "V_BOSS_NEAR",
+    "title": "拜访 · 高危层",
+    "room": "room_visit_empty",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "sound": "sting_low",
+    "dialogue": [
+      {
+        "speaker": "旁白",
+        "text": "更低的楼层。气场沉得像有人在天花板上爬。",
+        "horror": 14,
+        "horrorReason": "高危层强检：楼层越低，Boss 越近"
+      },
+      { "speaker": "system", "text": "无刀且冷家时，这层更危险。认家话术仍可过。" }
+    ],
+    "choices": [
+      {
+        "text": "亮刀震慑，要卡",
+        "when": { "inventory.cleaver": true },
+        "effects": {
+          "visitCards": 8,
+          "flags.visitedBossNear": true,
+          "horror": -6,
+          "horrorReason": "屠刀在高危层压住场面"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "我是 30 层宁念，家人等我回去",
+        "when": { "flags.refuseMother": false },
+        "effects": {
+          "visitCards": 6,
+          "flags.visitedBossNear": true,
+          "horror": -10,
+          "horrorReason": "报出家庭，高危层也让了一条路"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "硬着头皮走进去",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.visitedBossNear": true,
+          "horror": 24,
+          "horrorReason": "无认家、无气场：高危层惊悚重击，可能致死"
+        },
+        "returnVisit": true
+      },
+      {
+        "text": "立刻撤退",
+        "effects": {
+          "flags.visitedBossNear": true,
+          "horror": 6,
+          "horrorReason": "高危层撤退，虚惊"
+        },
+        "returnVisit": true
+      }
+    ],
+    "aiStage": "D4_VISIT"
+  }
+}

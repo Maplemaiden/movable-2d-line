@@ -1,0 +1,706 @@
+{
+  "D2-00": {
+    "id": "D2-00",
+    "title": "第二天 · 晨间播报",
+    "room": "room_bedroom",
+    "night": false,
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1450, "sprite": "boss_idle" }
+    },
+    "onEnter": { "day": 2, "aliveCount": 15, "floor": 30 },
+    "briefing": [
+      { "speaker": "system", "text": "第二天。全楼存活人数：15。昨晚又有人没撑住。" },
+      { "speaker": "旁白", "text": "播报把人吵醒。思思还贴在枕边，像什么都没发生。", "when": { "flags.refuseMother": false } },
+      { "speaker": "旁白", "text": "播报把人吵醒。他们看着你，像在等一句迟到的称呼。", "when": { "flags.refuseMother": true } },
+      { "speaker": "danmaku", "text": "第一天就掉一半？这副本吃人啊。" }
+    ],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "sisi",
+        "text": "妈妈，外面好吵。思思还要睡。",
+        "portrait": "sisi_front",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "sisi",
+        "text": "……你醒了。播报说还活着十五个。",
+        "portrait": "sisi_front",
+        "when": { "flags.refuseMother": true }
+      },
+      {
+        "speaker": "boss",
+        "text": "起来。有人会来烦你。",
+        "portrait": "boss_front",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "boss",
+        "text": "别装睡。手机要响了。",
+        "portrait": "boss_front",
+        "when": { "flags.refuseMother": true }
+      }
+    ],
+    "choices": [
+      { "text": "先看看谁找我", "effects": {}, "next": "D2-01" }
+    ],
+    "aiStage": "D2_WARN"
+  },
+  "D2-01": {
+    "id": "D2-01",
+    "title": "红姐私聊",
+    "room": "room_living",
+    "night": false,
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 1100, "sprite": "sisi_idle" },
+      "boss": { "x": 1500, "sprite": "boss_idle" }
+    },
+    "briefing": [
+      { "speaker": "旁白", "text": "私聊弹出来。对面自称红姐，说话很热络——热络得像卖攻略。" }
+    ],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "红姐",
+        "text": "30层的妹妹？姐姐是老玩家。攻略家人就能降惊悚，别跟他们硬刚。",
+        "portrait": "ningnian_phone",
+        "side": "right"
+      },
+      {
+        "speaker": "旁白",
+        "text": "她没提自己住几层，也没提昨天死掉的人。",
+        "horror": 2,
+        "horrorReason": "来历不明的热络私聊，让人有点发毛"
+      },
+      { "speaker": "system", "text": "回不回、信不信，都会进入下一幕。她不会把真相说全。" }
+    ],
+    "choices": [
+      {
+        "text": "多谢关心，我记下了",
+        "effects": {
+          "flags.trustHongjie": true,
+          "horror": -1,
+          "horrorReason": "把红姐当热心前辈，紧张略松"
+        },
+        "next": "D2-02"
+      },
+      {
+        "text": "嗯。知道了（少回）",
+        "effects": {},
+        "next": "D2-02"
+      },
+      {
+        "text": "你们俩一唱一和挺有意思",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.suspectHongjie": true,
+          "horror": 2,
+          "horrorReason": "起疑却说不破——不安轻轻抬了一下"
+        },
+        "next": "D2-02"
+      },
+      {
+        "text": "……怎么感觉你话只说一半",
+        "when": { "flags.refuseMother": false },
+        "effects": {
+          "flags.suspectHongjie": true
+        },
+        "next": "D2-02"
+      }
+    ],
+    "aiStage": "D2_WARN"
+  },
+  "D2-02": {
+    "id": "D2-02",
+    "title": "Boss 预警失败",
+    "room": "room_living",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 1100, "sprite": "sisi_idle" },
+      "boss": { "x": 1500, "sprite": "boss_idle" }
+    },
+    "autoDialogue": true,
+    "sound": "sting_low",
+    "dialogue": [
+      {
+        "speaker": "boss",
+        "text": "别信——",
+        "portrait": "boss_front",
+        "slots": [
+          { "side": "left", "portrait": "boss_front", "name": "？？？" },
+          { "side": "right", "portrait": "sisi_front", "name": "思思" }
+        ],
+        "focusSide": "left"
+      },
+      {
+        "speaker": "旁白",
+        "text": "他突然捂住心口，像被无形的手掐住。话断在一半。",
+        "horror": 8,
+        "horrorReason": "眼看「家人」被规则击倒，本能发寒",
+        "portrait": "boss_head"
+      },
+      {
+        "speaker": "sisi",
+        "text": "爸爸？！不许倒！",
+        "portrait": "sisi_angry",
+        "side": "right"
+      },
+      { "speaker": "system", "text": "机制不让他说破。你只能选择当下怎么做。" }
+    ],
+    "choices": [
+      {
+        "text": "去扶他",
+        "effects": {
+          "flags.bossCollapsedWarn": true,
+          "familyTrust.boss": 1,
+          "horror": -6,
+          "horrorReason": "把倒下的他当家人扶起来"
+        },
+        "next": "D2-03"
+      },
+      {
+        "text": "站着看",
+        "effects": {
+          "flags.bossCollapsedWarn": true,
+          "horror": 2,
+          "horrorReason": "眼睁睁看他倒下，不安残留"
+        },
+        "next": "D2-03"
+      },
+      {
+        "text": "往旁边躲开",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.bossCollapsedWarn": true,
+          "flags.fearBoss": true,
+          "familyTrust.boss": -1,
+          "horror": 8,
+          "horrorReason": "把倒下的家人当危险源躲开"
+        },
+        "next": "D2-03"
+      }
+    ],
+    "aiStage": "D2_WARN"
+  },
+  "D2-03": {
+    "id": "D2-03",
+    "title": "祖父母进门",
+    "room": "room_living",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss", "liuaiguo", "licuilan"],
+    "npcPose": {
+      "sisi": { "x": 900, "sprite": "sisi_idle" },
+      "boss": { "x": 1200, "sprite": "boss_idle" },
+      "liuaiguo": { "x": 2480, "sprite": "liuaiguo_idle", "walkTo": 1680 },
+      "licuilan": { "x": 2600, "sprite": "licuilan_idle", "walkTo": 1860 }
+    },
+    "briefing": [
+      { "speaker": "旁白", "text": "门外有脚步。比昨晚更沉、更密。" },
+      { "speaker": "danmaku", "text": "祖父母回家了？30层配置也太全了。" }
+    ],
+    "autoDialogue": true,
+    "sound": "sting_low",
+    "dialogue": [
+      {
+        "speaker": "liuaiguo",
+        "text": "乖儿媳，爷爷回来了。肚子饿不饿？",
+        "portrait": "yeye_enter",
+        "side": "left",
+        "slots": [
+          { "side": "left", "portrait": "yeye_enter", "name": "刘爱国" },
+          { "side": "right", "portrait": "nainai_enter", "name": "李翠兰" }
+        ],
+        "focusSide": "left"
+      },
+      {
+        "speaker": "licuilan",
+        "text": "死老头子少贫。让我看看——这就是新来的？",
+        "portrait": "nainai_enter",
+        "side": "right",
+        "slots": [
+          { "side": "left", "portrait": "yeye_enter", "name": "刘爱国" },
+          { "side": "right", "portrait": "nainai_enter", "name": "李翠兰" }
+        ],
+        "focusSide": "right"
+      },
+      {
+        "speaker": "旁白",
+        "text": "奶奶的皮肤黑得发亮。爷爷的毛衣……好像有什么东西在动。",
+        "horror": 12,
+        "horrorReason": "祖父母的形貌超出日常滤镜，惊悚抬升",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "旁白",
+        "text": "黑气跟着他们涌进来。你昨天没认家，空气更烫。",
+        "horror": 16,
+        "horrorReason": "拒家后再见祖父母，敌意与恐惧叠在一起",
+        "when": { "flags.refuseMother": true }
+      }
+    ],
+    "choices": [
+      {
+        "text": "爷爷奶奶好",
+        "when": { "flags.refuseMother": false },
+        "effects": {
+          "familyTrust.liuaiguo": 1,
+          "familyTrust.licuilan": 1,
+          "horror": -8,
+          "horrorReason": "当场认下祖孙关系"
+        },
+        "next": "D2-04"
+      },
+      {
+        "text": "……你们是谁",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "horror": 6,
+          "horrorReason": "对登门的「家人」继续追问身份"
+        },
+        "next": "D2-04"
+      },
+      {
+        "text": "先让他们坐",
+        "effects": {
+          "familyTrust.liuaiguo": 1,
+          "horror": -4,
+          "horrorReason": "用待客把怪异压成家常"
+        },
+        "next": "D2-04"
+      }
+    ],
+    "aiStage": "D2_GRANDPARENTS"
+  },
+  "D2-04": {
+    "id": "D2-04",
+    "title": "黑老太索命",
+    "room": "room_living",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss", "liuaiguo", "licuilan"],
+    "npcPose": {
+      "sisi": { "x": 880, "sprite": "sisi_idle" },
+      "boss": { "x": 1180, "sprite": "boss_idle" },
+      "liuaiguo": { "x": 1600, "sprite": "liuaiguo_idle" },
+      "licuilan": { "x": 1860, "sprite": "licuilan_idle" }
+    },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "licuilan",
+        "text": "这脸生得很。不像我们家的人。",
+        "portrait": "nainai_angry",
+        "side": "left"
+      },
+      {
+        "speaker": "sisi",
+        "text": "她是妈妈！不许奶奶凶她！",
+        "portrait": "sisi_angry",
+        "side": "right",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "sisi",
+        "text": "……她还没叫过奶奶。",
+        "portrait": "sisi_front",
+        "side": "right",
+        "when": { "flags.refuseMother": true }
+      },
+      {
+        "speaker": "旁白",
+        "text": "黑气从她袖口溢出来。原书里，这关要用「儿媳的关心」化解。",
+        "horror": 10,
+        "horrorReason": "黑老太抬手，压迫感压过来"
+      },
+      { "speaker": "system", "text": "认家话术能压惊悚。骂怪物会把今天推向危险。" }
+    ],
+    "choices": [
+      {
+        "text": "妈，皮肤太干了，敷面膜？",
+        "effects": {
+          "flags.grandmaFaceMask": true,
+          "flags.refuseMother": false,
+          "flags.pushAway": false,
+          "familyTrust.licuilan": 2,
+          "familyTrust.sisi": 1,
+          "horror": -22,
+          "horrorReason": "用面膜把索命写成护肤——大幅认家"
+        },
+        "next": "FREE_D2"
+      },
+      {
+        "text": "先让开，我看看他伤哪了",
+        "effects": {
+          "familyTrust.boss": 1,
+          "familyTrust.liuaiguo": 1,
+          "horror": -8,
+          "horrorReason": "护着倒下过的人，祖父母先观望"
+        },
+        "next": "FREE_D2"
+      },
+      {
+        "text": "别碰我！你们都是怪物！",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "familyTrust.licuilan": -1,
+          "familyTrust.liuaiguo": -1,
+          "horror": 18,
+          "horrorReason": "当众骂家人是怪物，黑气反扑"
+        },
+        "next": "D2-04x"
+      },
+      {
+        "text": "……我还没准备好叫妈",
+        "when": { "flags.refuseMother": false },
+        "effects": {
+          "horror": 6,
+          "horrorReason": "临场退缩，黑老太不悦"
+        },
+        "next": "FREE_D2"
+      }
+    ],
+    "aiStage": "D2_GRANDPARENTS"
+  },
+  "D2-04x": {
+    "id": "D2-04x",
+    "title": "黑气围困",
+    "room": "room_living",
+    "lockDoors": true,
+    "showNpcs": ["licuilan", "liuaiguo", "sisi", "boss"],
+    "npcPose": {
+      "licuilan": { "x": 1400, "sprite": "licuilan_idle" },
+      "liuaiguo": { "x": 1700, "sprite": "liuaiguo_idle" },
+      "sisi": { "x": 900, "sprite": "sisi_idle" },
+      "boss": { "x": 1100, "sprite": "boss_idle" }
+    },
+    "autoDialogue": true,
+    "sound": "sting_low",
+    "dialogue": [
+      {
+        "speaker": "licuilan",
+        "text": "不认家的东西，就该被家里吃掉。",
+        "portrait": "nainai_angry"
+      },
+      {
+        "speaker": "旁白",
+        "text": "黑气缠上脚踝。惊悚在往 100 爬——原书里这就是死。",
+        "horror": 28,
+        "horrorReason": "黑气围困：拒家被规则清算，惊悚暴涨"
+      },
+      {
+        "speaker": "sisi",
+        "text": "奶奶！她是我的——你再给她一次！",
+        "portrait": "sisi_angry",
+        "side": "right"
+      }
+    ],
+    "choices": [
+      {
+        "text": "妈！我错了，我给您敷面膜！",
+        "effects": {
+          "flags.grandmaFaceMask": true,
+          "flags.refuseMother": false,
+          "flags.pushAway": false,
+          "familyTrust.licuilan": 1,
+          "horror": -24,
+          "horrorReason": "绝境认妈并敷面膜，黑气退了一截"
+        },
+        "next": "FREE_D2"
+      },
+      {
+        "text": "硬抗过去（不认）",
+        "effects": {
+          "flags.refuseMother": true,
+          "familyTrust.licuilan": -1,
+          "horror": 22,
+          "horrorReason": "围困中仍拒认——再加一轮惊悚，可能致死"
+        },
+        "next": "FREE_D2"
+      }
+    ],
+    "aiStage": "D2_GRANDPARENTS"
+  },
+  "FREE_D2": {
+    "id": "FREE_D2",
+    "title": "第二天 · 家中自由",
+    "room": "room_living",
+    "lockDoors": false,
+    "allowRooms": [
+      "room_xuanguan",
+      "room_living",
+      "room_kitchen",
+      "room_bedroom",
+      "room_bathroom"
+    ],
+    "unlockPreset": "free_d2",
+    "exploreHint": "可去浴室看面膜、玄关看蛇皮袋，或按 C 与祖父母闲聊。准备好后去厨房餐桌开晚饭。",
+    "showNpcs": ["sisi", "boss", "liuaiguo", "licuilan"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1280, "sprite": "boss_idle" },
+      "liuaiguo": { "x": 1680, "sprite": "liuaiguo_idle" },
+      "licuilan": { "x": 1980, "sprite": "licuilan_idle" }
+    },
+    "briefing": [
+      {
+        "speaker": "旁白",
+        "text": "面膜生效了。奶奶摸着脸，黑气淡了许多。",
+        "when": { "flags.grandmaFaceMask": true }
+      },
+      {
+        "speaker": "旁白",
+        "text": "家里能走了。晚饭是下一闸——爷爷好像已经进了厨房。",
+        "when": { "flags.grandmaFaceMask": false }
+      },
+      { "speaker": "system", "text": "靠近餐桌会确认后进入晚饭。" }
+    ],
+    "briefingChoice": { "text": "先在家里转转", "unlockMove": true },
+    "advanceHint": "目标：去厨房餐桌，开始晚饭",
+    "guide": { "type": "door", "doorId": "to_kitchen", "text": "去厨房" },
+    "autoDialogue": false,
+    "storyHotspot": "table",
+    "storyNext": "D2-05",
+    "storyConfirm": "是否开始第二天的晚饭？",
+    "aiStage": "D2_GRANDPARENTS"
+  },
+  "D2-05": {
+    "id": "D2-05",
+    "title": "肠老头的晚饭",
+    "room": "room_kitchen",
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss", "liuaiguo", "licuilan"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1220, "sprite": "boss_idle" },
+      "liuaiguo": { "x": 1480, "sprite": "liuaiguo_idle" },
+      "licuilan": { "x": 1720, "sprite": "licuilan_idle" }
+    },
+    "briefing": [
+      { "speaker": "旁白", "text": "爷爷炒了满桌。香味很浓。浓得像刚从别处搬来的。" },
+      { "speaker": "danmaku", "text": "那盘绝对是肠吧……她还吃？" }
+    ],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "liuaiguo",
+        "text": "尝尝，爷爷的拿手菜。补身子。",
+        "portrait": "yeye_front"
+      },
+      {
+        "speaker": "sisi",
+        "text": "……爷爷又把毛衣煮进锅里了。",
+        "portrait": "sisi_front",
+        "side": "right"
+      },
+      {
+        "speaker": "旁白",
+        "text": "我看不太清食材。这很好。",
+        "horror": 6,
+        "horrorReason": "晚饭来源可疑，胃先紧了一下",
+        "when": { "flags.coldDinner": false }
+      },
+      {
+        "speaker": "旁白",
+        "text": "昨天推过盘子。今晚再拒，爷爷会记得。",
+        "horror": 8,
+        "horrorReason": "冷桌记忆叠加，晚饭更难以下咽",
+        "when": { "flags.coldDinner": true }
+      }
+    ],
+    "choices": [
+      {
+        "text": "吃一口，夸好吃",
+        "when": { "flags.grandmaFaceMask": true },
+        "effects": {
+          "flags.grandpaCookOk": true,
+          "flags.coldDinner": false,
+          "inventory.ateStrangeFood": true,
+          "familyTrust.liuaiguo": 2,
+          "horror": -10,
+          "horrorReason": "夸爷爷做饭，把可疑食材写成家常"
+        },
+        "next": "D2-06"
+      },
+      {
+        "text": "我来帮厨",
+        "when": { "flags.refuseMother": false },
+        "effects": {
+          "flags.grandpaCookOk": true,
+          "flags.coldDinner": false,
+          "familyTrust.liuaiguo": 1,
+          "familyTrust.licuilan": 1,
+          "familyTrust.sisi": 1,
+          "familyTrust.boss": 1,
+          "horror": -14,
+          "horrorReason": "下厨照顾全家，惊悚回落"
+        },
+        "next": "D2-06"
+      },
+      {
+        "text": "先动筷，不追问",
+        "effects": {
+          "flags.grandpaCookOk": true,
+          "inventory.ateStrangeFood": true,
+          "horror": 4,
+          "horrorReason": "硬吃但没完成夸奖，不适残留"
+        },
+        "next": "D2-06"
+      },
+      {
+        "text": "掀桌 / 这是肠子吧？",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.grandpaCookOk": false,
+          "flags.coldDinner": true,
+          "familyTrust.liuaiguo": -1,
+          "familyTrust.sisi": -1,
+          "horror": 16,
+          "horrorReason": "当众掀桌质问肠子，冷家固化"
+        },
+        "next": "D2-06"
+      }
+    ],
+    "aiStage": "D2_GRANDPARENTS"
+  },
+  "D2-06": {
+    "id": "D2-06",
+    "title": "夜 · 家庭磨合",
+    "room": "room_bedroom",
+    "night": true,
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1450, "sprite": "boss_idle" }
+    },
+    "briefing": [
+      { "speaker": "旁白", "text": "祖父母去另一间歇了。夜里只剩争宠与困意。", "when": { "flags.refuseMother": false } },
+      { "speaker": "旁白", "text": "门可以关上。你也可以再说一次「我是家人」。", "when": { "flags.refuseMother": true } }
+    ],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "sisi",
+        "text": "妈妈今晚跟思思睡。爸爸去沙发。",
+        "portrait": "sisi_front",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "boss",
+        "text": "……我坐这边。别把她惯坏。",
+        "portrait": "boss_front",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "旁白",
+        "text": "轻喜剧。谁先抢枕头，谁就赢。",
+        "horror": -4,
+        "horrorReason": "争宠把夜晚写成家庭日常",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "sisi",
+        "text": "你要锁门也可以。思思在外面。",
+        "portrait": "sisi_front",
+        "when": { "flags.refuseMother": true }
+      },
+      {
+        "speaker": "旁白",
+        "text": "上锁的房间更安静，也更像把自己关进副本规则里。",
+        "horror": 6,
+        "horrorReason": "独处上锁房，空寂推高惊悚",
+        "when": { "flags.refuseMother": true }
+      }
+    ],
+    "choices": [
+      {
+        "text": "那就一起挤挤",
+        "when": { "flags.refuseMother": false },
+        "effects": {
+          "flags.familyWarMediated": true,
+          "familyTrust.sisi": 1,
+          "familyTrust.boss": 1,
+          "horror": -8,
+          "horrorReason": "调解争风，夜里踏实"
+        },
+        "next": "END_DAY2"
+      },
+      {
+        "text": "关灯睡",
+        "when": { "flags.refuseMother": false },
+        "effects": { "horror": -3, "horrorReason": "当普通夜晚睡觉" },
+        "next": "END_DAY2"
+      },
+      {
+        "text": "……妈在。别锁我外面",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.refuseMother": false,
+          "flags.pushAway": false,
+          "flags.fearBoss": false,
+          "familyTrust.sisi": 1,
+          "familyTrust.boss": 1,
+          "horror": -18,
+          "horrorReason": "第二天夜里最终挽回"
+        },
+        "next": "END_DAY2"
+      },
+      {
+        "text": "锁门。我一个人睡",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.refuseMother": true,
+          "horror": 10,
+          "horrorReason": "上锁独处，冷家过夜"
+        },
+        "next": "END_DAY2"
+      }
+    ],
+    "aiStage": "D2_GRANDPARENTS"
+  },
+  "END_DAY2": {
+    "id": "END_DAY2",
+    "title": "第二天结束",
+    "room": "room_bedroom",
+    "night": true,
+    "lockDoors": false,
+    "allowRooms": [
+      "room_xuanguan",
+      "room_living",
+      "room_kitchen",
+      "room_bedroom",
+      "room_bathroom"
+    ],
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1450, "sprite": "boss_idle" }
+    },
+    "ending": true,
+    "endTitle": "第二天结束",
+    "endDesc": "祖父母住下了。红姐的私聊还在。明天会谈到出门的规矩。",
+    "endNext": "D3-00",
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "system",
+        "text": "第二天结算。面膜与晚饭会写进家人对你的记忆。积分仍约等于 100−惊悚。",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "system",
+        "text": "第二天结算。你还活着，但家里的霜没化开。明日授刀会更难。",
+        "when": { "flags.refuseMother": true }
+      }
+    ],
+    "choices": [
+      { "text": "进入结算", "effects": { "flags.day2_cleared": true }, "next": null, "showEnd": true }
+    ],
+    "aiStage": "D2_GRANDPARENTS"
+  }
+}

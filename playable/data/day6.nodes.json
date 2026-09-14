@@ -1,0 +1,455 @@
+{
+  "D6-00": {
+    "id": "D6-00",
+    "title": "第六天 · 存活播报",
+    "room": "room_living",
+    "night": false,
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 1100, "sprite": "sisi_idle" },
+      "boss": { "x": 1480, "sprite": "boss_idle" }
+    },
+    "onEnter": { "day": 6, "aliveCount": 5, "floor": 30 },
+    "briefing": [
+      { "speaker": "system", "text": "第六天。存活约 5 人。" },
+      { "speaker": "旁白", "text": "该下楼扫尾了。红姐约你在低层见面。" },
+      { "speaker": "danmaku", "text": "明神就是这天没的……" }
+    ],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "sisi",
+        "text": "带裙底那包胡椒。思思塞的。",
+        "portrait": "sisi_front",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "boss",
+        "text": "她若敢抢，你就让她看刀。",
+        "portrait": "boss_angry",
+        "when": { "inventory.cleaver": true }
+      }
+    ],
+    "choices": [
+      { "text": "下楼", "effects": {}, "next": "D6-01" }
+    ],
+    "aiStage": "D6_CONFLICT"
+  },
+  "D6-01": {
+    "id": "D6-01",
+    "title": "下楼组队",
+    "room": "room_corridor",
+    "lockDoors": true,
+    "showNpcs": [],
+    "onEnter": { "floor": 12 },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "苏小茉",
+        "text": "我们跟你一起。人少，别散。",
+        "when": { "flags.visitWithFriends": true }
+      },
+      {
+        "speaker": "方远",
+        "text": "9 层附近味道不对。",
+        "when": { "flags.metFangyuan": true }
+      },
+      {
+        "speaker": "旁白",
+        "text": "电梯数字往下跳。9，像一张网。",
+        "when": { "flags.visitWithFriends": false }
+      }
+    ],
+    "choices": [
+      { "text": "继续往下", "effects": { "floor": 9 }, "next": "D6-02" }
+    ],
+    "aiStage": "D6_CONFLICT"
+  },
+  "D6-02": {
+    "id": "D6-02",
+    "title": "透明罩伏击",
+    "room": "room_corridor",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "sound": "sting_low",
+    "dialogue": [
+      {
+        "speaker": "旁白",
+        "text": "一层透明的罩子从天花板落下来。声音被隔在外面。",
+        "horror": 10,
+        "horrorReason": "被罩住：退路切断"
+      },
+      {
+        "speaker": "红姐",
+        "text": "妹妹，把卡交出来。姐姐养你们到今天，也该收租了。"
+      },
+      {
+        "speaker": "俊哥",
+        "text": "别装。30 层的卡最多。"
+      }
+    ],
+    "choices": [
+      { "text": "先听她把话说完", "effects": {}, "next": "D6-03" }
+    ],
+    "aiStage": "D6_CONFLICT"
+  },
+  "D6-03": {
+    "id": "D6-03",
+    "title": "对峙",
+    "room": "room_corridor",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "红姐",
+        "text": "攻略家人？那是喂猪的料。猪养肥了，杀了，卡就是我们的。"
+      },
+      {
+        "speaker": "旁白",
+        "text": "她笑得很甜。甜得像第一天的私聊。",
+        "horror": 8,
+        "horrorReason": "对峙开始，空气发紧"
+      },
+      {
+        "speaker": "俊哥",
+        "text": "刀可以放下。人可以留下。"
+      }
+    ],
+    "choices": [
+      { "text": "……原来是这样", "effects": { "flags.knowKillSteal": true, "clues.killSteal": true }, "next": "D6-04" }
+    ],
+    "aiStage": "D6_CONFLICT"
+  },
+  "D6-04": {
+    "id": "D6-04",
+    "title": "真相段落",
+    "room": "room_corridor",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "system",
+        "text": "规则补全：杀玩家可夺其拜访卡。原住民不能直接说破——所以 Boss 才会倒下。"
+      },
+      {
+        "speaker": "旁白",
+        "text": "裙底的小包在手心出汗。刀如果在，刀柄也在出汗。"
+      },
+      { "speaker": "system", "text": "处决、放过、交卡，都会汇入善后。猎手可选择与她分赃。" }
+    ],
+    "choices": [
+      {
+        "text": "不饶。亮刀 / 撒胡椒",
+        "when": { "inventory.cleaver": true },
+        "effects": {
+          "flags.hongjieSpared": false,
+          "flags.knowKillSteal": true,
+          "horror": -8,
+          "horrorReason": "反杀养猪人，压迫落地"
+        },
+        "next": "D6-05A"
+      },
+      {
+        "text": "不饶。家人给的东西够用",
+        "when": { "inventory.cleaver": false, "flags.refuseMother": false },
+        "effects": {
+          "flags.hongjieSpared": false,
+          "horror": -4,
+          "horrorReason": "无刀但认家气场吓退——险胜"
+        },
+        "next": "D6-05E"
+      },
+      {
+        "text": "饶了。滚。",
+        "effects": {
+          "flags.hongjieSpared": true,
+          "familyTrust.sisi": -1,
+          "horror": 6,
+          "horrorReason": "放过养猪人，后患未消"
+        },
+        "next": "D6-05B"
+      },
+      {
+        "text": "把卡交出去",
+        "when": { "inventory.cleaver": false },
+        "effects": {
+          "visitCards": -99,
+          "flags.hongjieSpared": true,
+          "horror": 18,
+          "horrorReason": "交卡受辱，惊悚急升"
+        },
+        "next": "D6-05C"
+      },
+      {
+        "text": "跟红姐分赃，先杀队友",
+        "when": { "flags.hunterTrack": true },
+        "effects": {
+          "visitCards": 8,
+          "flags.hunterTrack": true,
+          "flags.blackHearts": true,
+          "flags.visitWithFriends": false,
+          "horror": 12,
+          "horrorReason": "反水猎手：卡多了，心黑了"
+        },
+        "next": "D6-05D"
+      }
+    ],
+    "aiStage": "D6_CONFLICT"
+  },
+  "D6-05A": {
+    "id": "D6-05A",
+    "title": "处决",
+    "room": "room_corridor",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "sound": "sting_low",
+    "dialogue": [
+      {
+        "speaker": "旁白",
+        "text": "刀光和胡椒一起上去。红姐的笑裂开。她的惊悚先到了 100。",
+        "horror": -6,
+        "horrorReason": "对方爆体，罩子碎了"
+      },
+      { "speaker": "俊哥", "text": "你——你不是玩家该有的——" },
+      { "speaker": "旁白", "text": "两个人都不再说话。地上是卡。" }
+    ],
+    "choices": [
+      { "text": "收拾残局", "effects": { "visitCards": 10 }, "next": "D6-06" }
+    ],
+    "aiStage": "D6_CONFLICT"
+  },
+  "D6-05B": {
+    "id": "D6-05B",
+    "title": "放过",
+    "room": "room_corridor",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "红姐",
+        "text": "……算你狠。后门见。"
+      },
+      {
+        "speaker": "旁白",
+        "text": "罩子抬起一条缝。他们跑了。卡还在你这儿，门却多了一个敌人。",
+        "horror": 4,
+        "horrorReason": "放走后的不安"
+      }
+    ],
+    "choices": [
+      { "text": "先集卡", "effects": {}, "next": "D6-06" }
+    ],
+    "aiStage": "D6_CONFLICT"
+  },
+  "D6-05C": {
+    "id": "D6-05C",
+    "title": "交卡",
+    "room": "room_corridor",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "红姐",
+        "text": "乖。猪就该这样。"
+      },
+      {
+        "speaker": "旁白",
+        "text": "卡被抽走。她还用鞋尖点了点你的膝盖。",
+        "horror": 16,
+        "horrorReason": "交卡后仍被羞辱，惊悚再推——可能致死"
+      },
+      { "speaker": "system", "text": "若此刻未死，他们会放你走。开门会很难。" }
+    ],
+    "choices": [
+      { "text": "爬起来", "effects": { "flags.blackFogRisk": true }, "next": "D6-06" }
+    ],
+    "aiStage": "D6_CONFLICT"
+  },
+  "D6-05D": {
+    "id": "D6-05D",
+    "title": "猎手反水",
+    "room": "room_corridor",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "旁白",
+        "text": "苏小茉的声音停在一半。卡比刚才多。楼道里没有朋友了。",
+        "horror": 8,
+        "horrorReason": "亲手结束同伴"
+      },
+      { "speaker": "红姐", "text": "妹妹够狠。明天门前见。" }
+    ],
+    "choices": [
+      { "text": "独吞继续扫尾", "effects": {}, "next": "D6-06" }
+    ],
+    "aiStage": "D6_CONFLICT"
+  },
+  "D6-05E": {
+    "id": "D6-05E",
+    "title": "无刀险胜",
+    "room": "room_corridor",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "旁白",
+        "text": "你报出家人的名字。远处 30 层像有人应了一声。红姐的脸白了。",
+        "horror": -8,
+        "horrorReason": "高信任远程压场"
+      },
+      { "speaker": "红姐", "text": "……30 层那些东西，真护着你？" },
+      { "speaker": "旁白", "text": "他们退了。卡还在。险。" }
+    ],
+    "choices": [
+      { "text": "捡起掉落的卡", "effects": { "visitCards": 6 }, "next": "D6-06" }
+    ],
+    "aiStage": "D6_CONFLICT"
+  },
+  "D6-06": {
+    "id": "D6-06",
+    "title": "分卡",
+    "room": "room_corridor",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "dialogue": [
+      { "speaker": "旁白", "text": "手里的卡可以分，可以独吞，也可以毁掉几张防猎手。" },
+      {
+        "speaker": "苏小茉",
+        "text": "给我几张，我就能去更高。",
+        "when": { "flags.visitWithFriends": true }
+      },
+      {
+        "speaker": "旁白",
+        "text": "没有人再跟你说话。卡只属于你。",
+        "when": { "flags.visitWithFriends": false }
+      }
+    ],
+    "choices": [
+      {
+        "text": "把抢来的卡分给苏小茉、方远",
+        "when": { "flags.visitWithFriends": true, "flags.hunterTrack": false },
+        "effects": {
+          "flags.sharedCards": true,
+          "visitCards": -4,
+          "horror": -6,
+          "horrorReason": "分卡给同伴，正史善后"
+        },
+        "next": "D6-07"
+      },
+      {
+        "text": "把卡全部分出去，求赎罪",
+        "when": { "flags.hunterTrack": true },
+        "effects": {
+          "flags.sharedCards": true,
+          "flags.hunterRedeemed": true,
+          "flags.hunterTrack": false,
+          "flags.blackHearts": false,
+          "visitCards": -8,
+          "familyTrust.sisi": 1,
+          "horror": -12,
+          "horrorReason": "猎手赎罪：分卡护人，黑心松动"
+        },
+        "next": "D6-07"
+      },
+      {
+        "text": "独吞",
+        "effects": {
+          "flags.sharedCards": false,
+          "horror": 2,
+          "horrorReason": "卡多了，同伴的眼神冷了"
+        },
+        "next": "D6-07"
+      },
+      {
+        "text": "毁掉几张，免得再被抢",
+        "effects": {
+          "visitCards": -3,
+          "horror": 3,
+          "horrorReason": "毁卡止损，也损了开门余量"
+        },
+        "next": "D6-07"
+      }
+    ],
+    "aiStage": "D6_CONFLICT"
+  },
+  "D6-07": {
+    "id": "D6-07",
+    "title": "扫尾集卡",
+    "room": "room_corridor",
+    "lockDoors": true,
+    "showNpcs": [],
+    "autoDialogue": true,
+    "dialogue": [
+      { "speaker": "旁白", "text": "剩下的空层很好清。有的门开着，有的只剩灰。" },
+      {
+        "speaker": "system",
+        "text": "本切片按「存活层等价」补卡，不要求真的走完 30 户。"
+      }
+    ],
+    "choices": [
+      {
+        "text": "扫完能开的门",
+        "effects": {
+          "visitCards": 8,
+          "floor": 30,
+          "horror": -2,
+          "horrorReason": "扫尾完成，回 30 层"
+        },
+        "next": "END_DAY6"
+      }
+    ],
+    "aiStage": "D6_CONFLICT"
+  },
+  "END_DAY6": {
+    "id": "END_DAY6",
+    "title": "第六天结束",
+    "room": "room_bedroom",
+    "night": true,
+    "lockDoors": false,
+    "allowRooms": [
+      "room_xuanguan",
+      "room_living",
+      "room_kitchen",
+      "room_bedroom",
+      "room_bathroom"
+    ],
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1450, "sprite": "boss_idle" }
+    },
+    "onEnter": { "floor": 30 },
+    "ending": true,
+    "endTitle": "第六天结束",
+    "endDesc": "红姐的线收束了。明天拼门。十一点，一楼。",
+    "endNext": "D7-00",
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "sisi",
+        "text": "妈妈明天要走吗。思思会把心给你。",
+        "portrait": "sisi_front",
+        "when": { "flags.refuseMother": false }
+      },
+      {
+        "speaker": "system",
+        "text": "第六天结算。第七天将打开异世之门——或迷失。"
+      }
+    ],
+    "choices": [
+      { "text": "进入结算", "effects": { "flags.day6_cleared": true }, "next": null, "showEnd": true }
+    ],
+    "aiStage": "D6_CONFLICT"
+  }
+}

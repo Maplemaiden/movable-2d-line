@@ -1,0 +1,214 @@
+{
+  "D5-00": {
+    "id": "D5-00",
+    "title": "第五天 · 再出门",
+    "room": "room_xuanguan",
+    "night": false,
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1400, "sprite": "boss_idle" }
+    },
+    "onEnter": { "day": 5, "aliveCount": 8, "floor": 30 },
+    "briefing": [
+      { "speaker": "system", "text": "第五天。存活更少。更低的楼层解锁了。" },
+      { "speaker": "旁白", "text": "红姐催你「来帮她攻 30」。你可以拒绝。" }
+    ],
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "红姐",
+        "text": "妹妹，今天带姐姐去 30 层坐坐？你家那几位，姐姐有办法处。",
+        "portrait": "ningnian_phone",
+        "side": "right"
+      },
+      {
+        "speaker": "boss",
+        "text": "别带外人上来。",
+        "portrait": "boss_angry"
+      }
+    ],
+    "choices": [
+      {
+        "text": "拒绝。家人不给外人看",
+        "effects": {
+          "flags.suspectHongjie": true,
+          "familyTrust.boss": 1,
+          "horror": -4,
+          "horrorReason": "护家拒引狼",
+          "visitReturnNode": "FREE_VISIT_D5"
+        },
+        "next": "FREE_VISIT_D5"
+      },
+      {
+        "text": "敷衍：改天吧",
+        "effects": { "visitReturnNode": "FREE_VISIT_D5" },
+        "next": "FREE_VISIT_D5"
+      },
+      {
+        "text": "……也好，介绍一下",
+        "when": { "flags.refuseMother": true },
+        "effects": {
+          "flags.trustHongjie": true,
+          "familyTrust.sisi": -1,
+          "horror": 8,
+          "horrorReason": "答应把家人介绍给红姐，引狼风险",
+          "visitReturnNode": "FREE_VISIT_D5"
+        },
+        "next": "FREE_VISIT_D5"
+      }
+    ],
+    "aiStage": "D4_VISIT"
+  },
+  "FREE_VISIT_D5": {
+    "id": "FREE_VISIT_D5",
+    "title": "楼道 · 第五天",
+    "room": "room_corridor",
+    "night": false,
+    "lockDoors": false,
+    "allowRooms": ["room_corridor"],
+    "unlockPreset": "visit_out",
+    "floorBar": true,
+    "visitDayMin": 5,
+    "visitHomeNode": "D5-02",
+    "visitHomeAlt": "D5-HOME",
+    "visitHomeFlag": "metFangyuan",
+    "showNpcs": [],
+    "spawnPlayerX": 520,
+    "onEnter": { "visitReturnNode": "FREE_VISIT_D5" },
+    "exploreHint": "8 层与 10 层已解锁。电梯或门牌进入；左侧回 30 层。",
+    "briefing": [
+      { "speaker": "旁白", "text": "更低的按钮发烫。楼道里偶尔有活人的脚步。" },
+      { "speaker": "system", "text": "可走楼道 + 楼层条。15 层可找还活着的人。" }
+    ],
+    "briefingChoice": { "text": "开始走动", "unlockMove": true },
+    "advanceHint": "目标：补访低层，或回 30 层",
+    "guide": { "type": "hotspot", "hotspotId": "elevator_panel", "text": "电梯 · E" },
+    "autoDialogue": false,
+    "nextOnDoor": { "to_home_from_corridor": "__VISIT_HOME__" },
+    "aiStage": "D4_VISIT"
+  },
+  "D5-02": {
+    "id": "D5-02",
+    "title": "遇健身教练",
+    "room": "room_corridor",
+    "lockDoors": true,
+    "showNpcs": [],
+    "onEnter": { "floor": 15 },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "方远",
+        "text": "宁念？方远。苏小茉跟我提过你。低层别一个人待太久。"
+      },
+      {
+        "speaker": "旁白",
+        "text": "他肩很宽，眼神却很疲。像刚从更可怕的门里退出来。"
+      }
+    ],
+    "choices": [
+      {
+        "text": "组队，情报共享",
+        "effects": {
+          "flags.visitWithFriends": true,
+          "flags.metFangyuan": true,
+          "flags.metSuxiaomo": true,
+          "horror": -5,
+          "horrorReason": "同伴让低层不那么空"
+        },
+        "next": "D5-HOME"
+      },
+      {
+        "text": "各自走，群里报数",
+        "effects": {
+          "flags.metFangyuan": true,
+          "horror": -2,
+          "horrorReason": "留了后路"
+        },
+        "next": "D5-HOME"
+      },
+      {
+        "text": "沉默离开",
+        "effects": {
+          "flags.metFangyuan": true,
+          "horror": 2,
+          "horrorReason": "拒绝伸来的手"
+        },
+        "next": "D5-HOME"
+      }
+    ],
+    "aiStage": "D4_VISIT"
+  },
+  "D5-HOME": {
+    "id": "D5-HOME",
+    "title": "第五夜",
+    "room": "room_bedroom",
+    "night": true,
+    "lockDoors": true,
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1450, "sprite": "boss_idle" }
+    },
+    "onEnter": { "floor": 30 },
+    "autoDialogue": true,
+    "dialogue": [
+      {
+        "speaker": "sisi",
+        "text": "明天好像更少人了。妈妈别去太低。",
+        "portrait": "sisi_front"
+      },
+      {
+        "speaker": "boss",
+        "text": "有人在养猪。我不能说完。",
+        "portrait": "boss_front",
+        "when": { "flags.bossCollapsedWarn": true }
+      },
+      {
+        "speaker": "旁白",
+        "text": "他捂心口的样子你见过。这次他只说到一半就停住。",
+        "when": { "flags.bossCollapsedWarn": true }
+      }
+    ],
+    "choices": [
+      {
+        "text": "早点睡，养精神",
+        "effects": { "horror": -5, "horrorReason": "回家过夜" },
+        "next": "END_DAY5"
+      }
+    ],
+    "aiStage": "D4_VISIT"
+  },
+  "END_DAY5": {
+    "id": "END_DAY5",
+    "title": "第五天结束",
+    "room": "room_bedroom",
+    "night": true,
+    "lockDoors": false,
+    "allowRooms": [
+      "room_xuanguan",
+      "room_living",
+      "room_kitchen",
+      "room_bedroom",
+      "room_bathroom"
+    ],
+    "showNpcs": ["sisi", "boss"],
+    "npcPose": {
+      "sisi": { "x": 980, "sprite": "sisi_idle" },
+      "boss": { "x": 1450, "sprite": "boss_idle" }
+    },
+    "ending": true,
+    "endTitle": "第五天结束",
+    "endDesc": "楼里只剩下一小撮人。明天会碰到红姐。",
+    "endNext": "D6-00",
+    "autoDialogue": true,
+    "dialogue": [
+      { "speaker": "system", "text": "第五天结算。拜访卡继续累计。第六天将进入对峙。" }
+    ],
+    "choices": [
+      { "text": "进入结算", "effects": { "flags.day5_cleared": true }, "next": null, "showEnd": true }
+    ],
+    "aiStage": "D4_VISIT"
+  }
+}
